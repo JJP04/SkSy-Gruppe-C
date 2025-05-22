@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+   <meta charset="UTF-8"/>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+   <title>Login</title>
+   <style> /*CSS*/
+   /* Mobile First Styles */
+   body {
+       font-family: Arial, sans-serif;
+       margin: 0;
+       padding: 16px;
+       background-color: #f9f9f9;
+   }
+
+   * {
+       box-sizing: border-box;
+   }
+
+   .container { /*weißer Kasten*/
+       max-width: 400px;
+       margin: auto;
+       background: white;
+       padding: 24px; /*Rand*/
+       border-radius: 8px;
+       box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+   }
+
+   .top-selection {
+       display: flex;
+       justify-content: center; /* Mittig ausrichten */
+       align-items: center;
+       gap: 50px; /* Abstand zwischen Elementen */
+       margin-bottom: 12px;
+       font-size: 18px;
+       user-select: none;
+       border-bottom: 1px solid #ccc; /* untere Trennerlinie */
+       padding-bottom: 8px;
+   }
+
+   /* Einzelne Tabs als Flex-Items */
+   .tab {
+       padding-bottom: 4px;
+       border-bottom: 2px solid transparent;
+       color: #555;
+       cursor: pointer;
+       transition: color 0.3s, border-color 0.3s;
+       position: center;
+   }
+
+   /* Aktiver Tab mit blauer Linie unten und Farbe */
+   .tab.active {
+       border-color: #007bff;
+       color: #007bff;
+   }
+
+   /* Trennlinie zwischen den Tabs (außer beim letzten) */
+   .divider {
+       width: 1px;
+       height: 20px;
+       background-color: #ccc;
+   }
+
+
+   input, button {
+       width: 100%;
+       margin: 12px 0;
+       padding: 12px;
+       font-size: 16px;
+       border-radius: 6px;
+       border: 1px solid #ccc;
+   }
+
+   button {
+       background-color: #007bff;
+       color: white;
+       border: none;
+   }
+
+   button:hover {
+       background-color: #0056b3;
+   }
+   </style>
+
+
+</head>
+<body>
+
+
+<div class="container">
+   <div class="top-selection">
+       <span id="loginTab" class="tab active">Login</span>
+       <div class="divider"></div>
+       <span id="registerTab" class="tab">Registrierung</span>
+   </div>
+   <form>
+       <input type="text" placeholder="Benutzername" required/>
+       <input type="password" placeholder="Passwort" required/>
+       <button type="submit">Einloggen</button>
+   </form>
+</div>
+
+</body>
+
