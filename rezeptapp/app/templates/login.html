@@ -102,7 +102,11 @@
     </form>
     {% elif active_tab == 'register' %}
     <form>
-        <input type="text" placeholder="Benutzername" required/>
+        <input type="text" id="username" name="username"  placeholder="Benutzername" required>
+        <input type="email" id="email" name="email" placeholder="E-Mail" required>
+        <input type="password" id="password" name="password" placeholder="Password" required>
+        <input type="password" id="confirm_password" name="confirm_password" placeholder="Password bestätigen"required>
+        <button type="submit" class="submit-btn">Registrieren</button>
     </form>
     {% endif %}
 </div>
