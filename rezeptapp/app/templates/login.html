@@ -24,11 +24,13 @@
         padding: 24px; /*Rand*/
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        height: 100vh;
     }
 
     .top-selection {
+        position: relative;
         display: flex;
-        justify-content: center; /* Mittig ausrichten */
+        justify-content: space-between; /* Mittig ausrichten */
         align-items: center;
         gap: 50px; /* Abstand zwischen Elementen */
         margin-bottom: 12px;
@@ -40,12 +42,16 @@
 
     /* Einzelne Tabs als Flex-Items */
     .tab {
+        width: 50%; /* je Hälfte */
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         padding-bottom: 4px;
-        border-bottom: 2px solid transparent;
+
         color: #555;
         cursor: pointer;
         transition: color 0.3s, border-color 0.3s;
-        position: center;
     }
 
     /* Aktiver Tab mit blauer Linie unten und Farbe */
@@ -56,12 +62,16 @@
 
     /* Trennlinie zwischen den Tabs (außer beim letzten) */
     .divider {
+        position: absolute; /* absolut positionieren */
+        left: 50%; /* horizontal Mitte vom Container */
+        transform: translateX(-50%); /* genau zentrieren */
         width: 1px;
         height: 20px;
+        justify-content: center; /* Mittig ausrichten */
         background-color: #ccc;
     }
 
-    input, button {
+    input {
         width: 100%;
         margin: 12px 0;
         padding: 12px;
@@ -70,15 +80,34 @@
         border: 1px solid #ccc;
     }
 
+
     button {
+        text-align: center;
+        width: 70%;
+        margin: 12px 0;
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
         background-color: #007bff;
         color: white;
         border: none;
+
     }
 
     button:hover {
         background-color: #0056b3;
     }
+
+    h4,
+    a.h4 {
+        font-size: 11px;
+        color: #007bff;
+        margin-top: 0;
+        margin-bottom: 12px;
+        display: inline-block;
+    }
+
     </style>
 
 
@@ -87,6 +116,7 @@
 
 
 <div class="container">
+    {% if active_tab != 'passwortVergessen' %}
     <div class="top-selection">
         <a href="{{ url_for('auth.login', tab='login') }}"
            class="tab {% if active_tab == 'login' %}active{% endif %}">Login</a>
@@ -94,11 +124,14 @@
         <a href="{{ url_for('auth.login', tab='register') }}"
            class="tab {% if active_tab == 'register' %}active{% endif %}">Registrierung</a>
     </div>
-    {% if active_tab == 'login' %}
+    {% elif active_tab == 'login' %}
     <form>
         <input type="text" placeholder="Benutzername" required/>
         <input type="password" placeholder="Passwort" required/>
+        <a href="{{ url_for('auth.login', tab='passwortVergessen') }}"
+           class="h4 {% if active_tab == 'register' %}active{% endif %}">Passwort vergessen?</a>
         <button type="submit">Einloggen</button>
+
     </form>
     {% elif active_tab == 'register' %}
     <form>
@@ -107,6 +140,11 @@
         <input type="password" id="password" name="password" placeholder="Password" required>
         <input type="password" id="confirm_password" name="confirm_password" placeholder="Password bestätigen"required>
         <button type="submit" class="submit-btn">Registrieren</button>
+    </form>
+    {% elif active_tab == 'passwortVergessen' %}
+    <form>
+        <input type="text" placeholder="E-Mail adresse" required/>
+        <input type="text" placeholder="Neues Passwort" required/>
     </form>
     {% endif %}
 </div>
