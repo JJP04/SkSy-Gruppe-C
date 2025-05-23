@@ -116,7 +116,6 @@
 
 
 <div class="container">
-    {% if active_tab != 'passwortVergessen' %}
     <div class="top-selection">
         <a href="{{ url_for('auth.login', tab='login') }}"
            class="tab {% if active_tab == 'login' %}active{% endif %}">Login</a>
@@ -124,7 +123,7 @@
         <a href="{{ url_for('auth.login', tab='register') }}"
            class="tab {% if active_tab == 'register' %}active{% endif %}">Registrierung</a>
     </div>
-    {% elif active_tab == 'login' %}
+    {% if active_tab == 'login' %}
     <form>
         <input type="text" placeholder="Benutzername" required/>
         <input type="password" placeholder="Passwort" required/>
