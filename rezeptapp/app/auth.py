@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint, render_template, redirect, url_for, request
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -8,4 +8,5 @@ def home():
 
 @auth_bp.route('/login')
 def login():
-    return render_template('login.html')
+    tab = request.args.get('tab', 'login')
+    return render_template('login.html', active_tab=tab)
