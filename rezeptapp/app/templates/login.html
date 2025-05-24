@@ -12,7 +12,7 @@
         padding: 16px;
         background-color: #f9f9f9;
     }
-
+Ich
     * {
         box-sizing: border-box;
     }
@@ -166,8 +166,16 @@
         <input type="email" id="email" name="email" placeholder="E-Mail" required>
         <input type="password" id="password" name="password" placeholder="Password" required>
         <input type="password" id="confirm_password" name="confirm_password" placeholder="Password bestätigen"required>
+
+        <!-- Zufällig ausgewählte Sicherheitsfragen -->
+        {% for i in range(3) %}
+          <label>Sicherheitsfrage {{i+1}}:</label>
+          <input type="text" name="question{{ i+1}}" value="{{ questions[i] }}" readonly>
+          <input type="text" name="answer{{ i+1}}" placeholder="Antwort {{ i+1 }}" required>
+        {% endfor %}
         <button type="submit" class="submit-btn">Registrieren</button>
     </form>
+
     {% elif active_tab == 'passwortVergessen' %}
     <form method="post">
         <input type="hidden" name="pw_reset" value="3">
