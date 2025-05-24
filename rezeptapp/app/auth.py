@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask import Blueprint, render_template, redirect, url_for, request, flash, session
 from .models import User
 from .extensions import db
 import random
@@ -29,6 +29,7 @@ def login():
     # 3 zufällige Sicherheitsfragen
     if request.method == 'GET' and tab == 'register':
         selected_questions = random.sample(DEFAULT_QUESTIONS, 3)
+        session['questions'] = selected_questions
         return render_template('login.html', active_tab='register', questions=selected_questions)
 
     if request.method == 'POST':
@@ -55,50 +56,49 @@ def login():
             password = request.form.get('password')
             confirm_password = request.form.get('confirm_password')
 
+            # Sicherheitsfragen & Antworten auslesen
+            questions = session.get('questions')
+            answer1 = request.form.get('answer1')
+            answer2 = request.form.get('answer2')
+            answer3 = request.form.get('answer3')
+
             if len(username) > 16:
                 flash('Username darf maximal 16 Zeichen haben.', 'error')
-                return render_template('login.html', active_tab='register')
+                return render_template('login.html', active_tab='register', questions=questions)
 
             if len(email) > 64:
                 flash('Email darf maximal 64 Zeichen haben.', 'error')
-                return render_template('login.html', active_tab='register')
+                return render_template('login.html', active_tab='register', questions=questions)
 
             if len(password) > 32:
                 flash('Passwort darf maximal 32 Zeichen haben.', 'error')
-                return render_template('login.html', active_tab='register')
+                return render_template('login.html', active_tab='register', questions=questions)
 
             # Check Passwortbestätigung
             if password != confirm_password:
                 flash('Passwörter stimmen nicht überein.', 'error')
-                return render_template('login.html', active_tab='register')
+                return render_template('login.html', active_tab='register', questions=questions)
 
             # Check ob Email oder Username schon existiert
             if User.query.filter((User.email == email) | (User.username == username)).first():
                 flash('Benutzername oder E-Mail existiert bereits.', 'error')
-                return render_template('login.html', active_tab='register')
-
-            # Sicherheitsfragen und Antworten auslesen
-            question1 = request.form.get('question1')
-            answer1 = request.form.get('answer1')
-            question2 = request.form.get('question2')
-            answer2 = request.form.get('answer2')
-            question3 = request.form.get('question3')
-            answer3 = request.form.get('answer3')
+                return render_template('login.html', active_tab='register', questions=questions)
 
 
             if not all([answer1, answer2, answer3]):
                 flash('Bitte alle Antworten zu den Sicherheitsfragen eingeben!', 'error')
-                return render_template('login.html', active_tab='register', questions=[question1, question2, question3])
+                return render_template('login.html', active_tab='register', questions=questions)
 
             # User anlegen (Passwort verschlüsseln + Antworten zu Sicherheitsfragen speichern)
             new_user = User(username=username, email=email)
             new_user.set_password(password)
-            new_user.question1 = question1
+            new_user.question1 = questions[0]
             new_user.set_answer(1, answer1)
-            new_user.question2 = question2
+            new_user.question2 = questions[1]
             new_user.set_answer(2, answer2)
-            new_user.question3 = question3
+            new_user.question3 = questions[2]
             new_user.set_answer(3, answer3)
+
             db.session.add(new_user)
             db.session.commit()
 
