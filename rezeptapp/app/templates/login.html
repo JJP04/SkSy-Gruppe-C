@@ -12,7 +12,7 @@
         padding: 16px;
         background-color: #f9f9f9;
     }
-
+    Ich
     * {
         box-sizing: border-box;
     }
@@ -108,6 +108,21 @@
         display: inline-block;
     }
 
+    .flashes {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 16px;
+    color: red;
+    }
+
+    .flashes li.error {
+    color: red;
+    }
+
+    .flashes li.success {
+        color: green;
+    }
+
     </style>
 
 
@@ -116,6 +131,17 @@
 
 
 <div class="container">
+    <!-- Um Fehlermeldungen ausgeben zu können (gerne später noch eleganter implementieren) -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
     <div class="top-selection">
         <a href="{{ url_for('auth.login', tab='login') }}"
            class="tab {% if active_tab == 'login' %}active{% endif %}">Login</a>
@@ -124,27 +150,33 @@
            class="tab {% if active_tab == 'register' %}active{% endif %}">Registrierung</a>
     </div>
     {% if active_tab == 'login' %}
-    <form>
-        <input type="text" placeholder="Benutzername" required/>
-        <input type="password" placeholder="Passwort" required/>
-        <a href="{{ url_for('auth.login', tab='passwortVergessen') }}"
-           class="h4 {% if active_tab == 'register' %}active{% endif %}">Passwort vergessen?</a>
+    <form method="post">
+        <input type="hidden" name="login" value="1">  <!-- Um die verschiedenen Forms unterscheiden zu können -->
+        <input type="email" name="email" placeholder="E-Mail" required/>
+        <input type="password" name="password" placeholder="Passwort" required/>
         <button type="submit">Einloggen</button>
-
     </form>
+    <a href="{{ url_for('auth.pw_reset_start') }}" class="h4">Passwort vergessen?</a>
+
     {% elif active_tab == 'register' %}
-    <form>
+    <form method="post">
+        <input type="hidden" name="register" value="2">
         <input type="text" id="username" name="username"  placeholder="Benutzername" required>
         <input type="email" id="email" name="email" placeholder="E-Mail" required>
         <input type="password" id="password" name="password" placeholder="Password" required>
         <input type="password" id="confirm_password" name="confirm_password" placeholder="Password bestätigen"required>
+
+        <!-- Zufällig ausgewählte Sicherheitsfragen -->
+        {% for question in questions %}
+          <label>Sicherheitsfrage {{ loop.index }}:</label>
+          <input type="text" name="question{{ loop.index }}" value="{{ question }}" readonly>
+          <input type="text" name="answer{{ loop.index }}" placeholder="Antwort {{ loop.index }}" required>
+        {% endfor %}
         <button type="submit" class="submit-btn">Registrieren</button>
     </form>
-    {% elif active_tab == 'passwortVergessen' %}
-    <form>
-        <input type="text" placeholder="E-Mail adresse" required/>
-        <input type="text" placeholder="Neues Passwort" required/>
-    </form>
+
+    {# gelöscht: {% elif active_tab == 'passwortVergessen'... %} #}
+
     {% endif %}
 </div>
 

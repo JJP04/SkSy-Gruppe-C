@@ -1,5 +1,6 @@
 import os
 from flask import Flask
+from .extensions import db
 
 def create_app():
     # Absoluter Pfad zum aktuellen Verzeichnis (app/)
@@ -13,10 +14,15 @@ def create_app():
 
     app.config.from_object('config.Config')
 
+    db.init_app(app)
+
     from .auth import auth_bp
     from .dashboard import dashboard_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
+
+    with app.app_context():
+        db.create_all()
 
     return app
