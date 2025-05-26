@@ -12,7 +12,7 @@
         padding: 16px;
         background-color: #f9f9f9;
     }
-Ich
+    Ich
     * {
         box-sizing: border-box;
     }
@@ -154,10 +154,10 @@ Ich
         <input type="hidden" name="login" value="1">  <!-- Um die verschiedenen Forms unterscheiden zu können -->
         <input type="email" name="email" placeholder="E-Mail" required/>
         <input type="password" name="password" placeholder="Passwort" required/>
-        <a href="{{ url_for('auth.pw_reset_start') }}" class="h4">Passwort vergessen?</a>
         <button type="submit">Einloggen</button>
-
     </form>
+    <a href="{{ url_for('auth.pw_reset_start') }}" class="h4">Passwort vergessen?</a>
+
     {% elif active_tab == 'register' %}
     <form method="post">
         <input type="hidden" name="register" value="2">
