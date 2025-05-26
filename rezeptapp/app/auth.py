@@ -1,4 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session
+from sqlalchemy import func
+
 from .models import User
 from .extensions import db
 import random
@@ -107,6 +109,65 @@ def login():
             return render_template('login.html', active_tab='login')
 
 
-
     return render_template('login.html', active_tab=tab)
 
+
+# Passwort-Reset Start: E-Mail abfragen und Frage anzeigen
+@auth_bp.route('/pw_reset_start', methods=['GET', 'POST'])
+def pw_reset_start():
+    if request.method == 'POST':
+        email = request.form.get('email', '').strip().lower()
+
+
+        #  DEBUG-Ausgabe ins Terminal
+        print("DEBUG: Eingegebene E-Mail:", email)
+        users = User.query.all()
+        print("DEBUG: E-Mails in DB:")
+        for u in users:
+            print("-", u.email)
+
+        user = User.query.filter(db.func.lower(User.email) == email).first()
+
+        if user:
+            index = random.randint(1,3)
+            session['reset_email'] = email
+            session['questions_index'] = index
+            question = getattr(user, f'question{index}')
+            return render_template('reset_verify.html', question=question)
+        else:
+            flash('E-Mail nicht gefunden.', 'error')
+
+
+    return render_template('reset_start.html')
+
+# Passwort-Reset Abschluss: Antwort prüfen + neues Passwort setzen
+@auth_bp.route('/pw_reset_verify', methods=['GET', 'POST'])
+def pw_reset_verify():
+    email = session.get('reset_email')
+    index = session.get('questions_index')
+
+    if not email or not index:
+        flash("Sitzung abgelaufen oder ungültig. Bitte erneut starten.", "error")
+        return redirect(url_for('auth.pw_reset_start'))
+
+    user = User.query.filter(func.lower(User.email) == email.lower()).first()
+
+    if request.method == 'GET':
+        question = getattr(user, f'question{index}')
+        return render_template('reset_verify.html', question=question)
+
+    # POST-Fall
+    answer = request.form.get('answer')
+    new_password = request.form.get('new_password')
+
+    user = User.query.filter(func.lower(User.email) == email.lower()).first()
+
+    if user and user.check_answer(index, answer):
+        user.set_password(new_password)
+        db.session.commit()
+        flash('Passwort erfolgreich geändert. Bitte einloggen.', 'success')
+        return redirect(url_for('auth.login', tab='login'))
+    else:
+        flash('Antwort war falsch', 'error')
+        question = getattr(user, f'question{index}')
+        return render_template('reset_verify.html', question=question)

@@ -154,8 +154,7 @@ Ich
         <input type="hidden" name="login" value="1">  <!-- Um die verschiedenen Forms unterscheiden zu können -->
         <input type="email" name="email" placeholder="E-Mail" required/>
         <input type="password" name="password" placeholder="Passwort" required/>
-        <a href="{{ url_for('auth.login', tab='passwortVergessen') }}"
-           class="h4 {% if active_tab == 'register' %}active{% endif %}">Passwort vergessen?</a>
+        <a href="{{ url_for('auth.pw_reset_start') }}" class="h4">Passwort vergessen?</a>
         <button type="submit">Einloggen</button>
 
     </form>
@@ -168,21 +167,16 @@ Ich
         <input type="password" id="confirm_password" name="confirm_password" placeholder="Password bestätigen"required>
 
         <!-- Zufällig ausgewählte Sicherheitsfragen -->
-        {% for i in range(3) %}
-          <label>Sicherheitsfrage {{i+1}}:</label>
-          <input type="text" name="question{{ i+1}}" value="{{ questions[i] }}" readonly>
-          <input type="text" name="answer{{ i+1}}" placeholder="Antwort {{ i+1 }}" required>
+        {% for question in questions %}
+          <label>Sicherheitsfrage {{ loop.index }}:</label>
+          <input type="text" name="question{{ loop.index }}" value="{{ question }}" readonly>
+          <input type="text" name="answer{{ loop.index }}" placeholder="Antwort {{ loop.index }}" required>
         {% endfor %}
         <button type="submit" class="submit-btn">Registrieren</button>
     </form>
 
-    {% elif active_tab == 'passwortVergessen' %}
-    <form method="post">
-        <input type="hidden" name="pw_reset" value="3">
-        <input type="email" name="email" placeholder="E-Mail Adresse" required/>
-        <input type="password" name="password" placeholder="Neues Passwort" required/>
-        <button type="submit" class="submit-btn">PW aktualisieren</button>
-    </form>
+    {# gelöscht: {% elif active_tab == 'passwortVergessen'... %} #}
+
     {% endif %}
 </div>
 

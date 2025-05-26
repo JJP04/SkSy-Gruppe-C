@@ -27,7 +27,7 @@ class User(db.Model):
     # Sicherheitsantworten setzen + prüfen
     def set_answer(self, index, answer):
         hashed = generate_password_hash(answer.lower())
-        setattr(self, f'answer{index}', hashed)
+        setattr(self, f'answer{index}_hash', hashed)
 
     def check_answer(self, index, answer):
         hashed = getattr(self, f'answer{index}_hash')
