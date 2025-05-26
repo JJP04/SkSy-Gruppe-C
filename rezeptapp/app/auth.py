@@ -133,7 +133,7 @@ def pw_reset_start():
             session['reset_email'] = email
             session['questions_index'] = index
             question = getattr(user, f'question{index}')
-            return render_template('reset_verify.html', question=question)
+            return redirect(url_for('auth.pw_reset_verify'))
         else:
             flash('E-Mail nicht gefunden.', 'error')
 
