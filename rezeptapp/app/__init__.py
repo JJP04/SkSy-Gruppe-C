@@ -3,6 +3,7 @@ from flask import Flask
 from .extensions import db
 from .models import User
 from flask_login import LoginManager
+from transformers import pipeline
 
 def create_app():
     # Absoluter Pfad zum aktuellen Verzeichnis (app/)
@@ -23,6 +24,14 @@ def create_app():
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
+
+    #erstes Mal starten dauert, da Model lokal heruntergeladen wird (Achtung, ~ 1 GB)
+    app.ner_pipeline = pipeline(
+        "ner",
+        model="edwardjross/xlm-roberta-base-finetuned-recipe-all",
+        tokenizer="edwardjross/xlm-roberta-base-finetuned-recipe-all",
+        aggregation_strategy="simple"
+    )
 
     from .auth import auth_bp
     from .dashboard import dashboard_bp

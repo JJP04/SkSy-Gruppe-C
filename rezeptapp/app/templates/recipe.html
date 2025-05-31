@@ -1,13 +1,20 @@
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Rezept anlegen</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            padding: 24px;
+            margin: 0;
+            padding: 16px;
             background-color: #f9f9f9;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         .container {
@@ -19,9 +26,38 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
         }
 
-        h2 {
-            margin-top: 0;
-            color: #333;
+        .top-selection {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 50px;
+            margin-bottom: 16px;
+            font-size: 18px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 8px;
+        }
+
+        .tab {
+            width: 50%;
+            text-align: center;
+            padding-bottom: 4px;
+            color: #555;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .tab.active {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+        }
+
+        .divider {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1px;
+            height: 20px;
+            background-color: #ccc;
         }
 
         h4,
@@ -33,25 +69,17 @@
             display: inline-block;
         }
 
-        label {
-            display: block;
-            margin-top: 12px;
-            font-weight: bold;
-        }
-
-        input[type="text"],
-        textarea,
-        select {
+        input, textarea, select {
             width: 100%;
             padding: 12px;
-            margin-top: 6px;
+            margin-top: 8px;
+            margin-bottom: 16px;
             border: 1px solid #ccc;
             border-radius: 6px;
             font-size: 14px;
         }
 
         button {
-            margin-top: 20px;
             width: 100%;
             padding: 12px;
             background-color: #007bff;
@@ -65,24 +93,65 @@
         button:hover {
             background-color: #0056b3;
         }
+
+        ul {
+            padding-left: 16px;
+        }
+
+        .flashes {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 16px;
+        }
+
+        .flashes li.error { color: red; }
+        .flashes li.success { color: green; }
+
+        .ingredient-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 12px;
+        }
+
+        .ingredient-list li {
+            background-color: #e8f0fe;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            font-size: 15px;
+            color: #333;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            transition: background-color 0.3s;
+        }
+
+        .ingredient-list li:hover {
+            background-color: #d2e3fc;
+        }
+
+        .no-ingredients {
+            color: #999;
+            font-style: italic;
+            margin-top: 12px;
+        }
+
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Neues Rezept anlegen</h2>
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <ul class="flashes">
-          {% for category, message in messages %}
+    {% set all_messages = get_flashed_messages(with_categories=true) %}
+    {% if all_messages %}
+      <ul class="flashes">
+        {% for category, message in all_messages %}
+          {% if category not in ['hidden', 'debug'] %}
             <li class="{{ category }}">{{ message }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% endif %}
 
-    <form method="post" action="{{ url_for('recipe.create') }}">
+    {% if active_tab == 'create' %}
+    <form method="post" action="{{ url_for('recipe.analyze') }}">
         <label for="title">Rezept-Titel:</label>
         <input type="text" id="title" name="title" required>
 
@@ -95,12 +164,32 @@
             <option value="private">Privat</option>
         </select>
 
+        <button type="submit">Weiter</button>
+    </form>
+    {% elif active_tab == 'ingredients' %}
+    <h2 style="margin-top: 24px;">Zutaten-Vorschau</h2>
+
+    {% if ingredients %}
+        <ul class="ingredient-list">
+            {% for item in ingredients %}
+                <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="no-ingredients">Keine Zutaten erkannt.</p>
+    {% endif %}
+
+    <form method="post" action="{{ url_for('recipe.save') }}">
+        <input type="hidden" name="title" value="{{ title }}">
+        <input type="hidden" name="description" value="{{ description }}">
+        <input type="hidden" name="visibility" value="{{ visibility }}">
+        <input type="hidden" name="ingredients" value="{{ ingredients | join(',') }}">
         <button type="submit">Rezept speichern</button>
     </form>
-    <!-- Zurück-Button -->
-    <a href="{{ url_for('dashboard.dashboard') }}" class="h4">Zurück</a>
-
+    {% endif %}
+    <a href="{{ url_for('dashboard.dashboard') }}" class="h4">Zurück ohne Speichern</a>
 </div>
 
 </body>
 </html>
+

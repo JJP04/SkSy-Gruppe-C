@@ -132,15 +132,16 @@
 
 <div class="container">
     <!-- Um Fehlermeldungen ausgeben zu können (gerne später noch eleganter implementieren) -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <ul class="flashes">
-          {% for category, message in messages %}
+    {% set all_messages = get_flashed_messages(with_categories=true) %}
+    {% if all_messages %}
+      <ul class="flashes">
+        {% for category, message in all_messages %}
+          {% if category not in ['hidden', 'debug'] %}
             <li class="{{ category }}">{{ message }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% endif %}
 
     <div class="top-selection">
         <a href="{{ url_for('auth.login', tab='login') }}"
