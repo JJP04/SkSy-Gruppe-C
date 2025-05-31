@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Rezept anlegen</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 24px;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        h4,
+        a.h4 {
+            font-size: 11px;
+            color: #007bff;
+            margin-top: 0;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+
+        label {
+            display: block;
+            margin-top: 12px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Neues Rezept anlegen</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <form method="post" action="{{ url_for('recipe.create') }}">
+        <label for="title">Rezept-Titel:</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="description">Beschreibung:</label>
+        <textarea id="description" name="description" rows="6" required></textarea>
+
+        <label for="visibility">Sichtbarkeit:</label>
+        <select id="visibility" name="visibility" required>
+            <option value="public">Öffentlich</option>
+            <option value="private">Privat</option>
+        </select>
+
+        <button type="submit">Rezept speichern</button>
+    </form>
+    <!-- Zurück-Button -->
+    <a href="{{ url_for('dashboard.dashboard') }}" class="h4">Zurück</a>
+
+</div>
+
+</body>
+</html>

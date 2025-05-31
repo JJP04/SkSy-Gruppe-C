@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session
 from sqlalchemy import func
-
+from flask_login import login_user
 from .models import User
 from .extensions import db
 import random
@@ -45,6 +45,7 @@ def login():
 
             if user and user.check_password(password):
                 # Login erfolgreich
+                login_user(user)
                 return redirect(url_for('dashboard.dashboard'))
             else:
                 flash('Falsche Email oder Passwort.', 'error')
