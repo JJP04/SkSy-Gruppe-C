@@ -6,12 +6,11 @@
 </head>
 
 <body>
-    <div class="container">
-    <a href="{{ url_for('auth.login') }}" class="top-right-btn-link">
-        <button class="top-right-btn">Anmelden</button>
-    </a>
+    <div class="top-selection">
+        <div class="divider"></div>
+    </div>
 
-
-</div>
+    <a href="{{ url_for('auth.login') }}" class="h4">Anmelden</a>
+    <a href="{{ url_for('recipe.create') }}" class="h4">Rezept erstellen</a>
 
 </body>

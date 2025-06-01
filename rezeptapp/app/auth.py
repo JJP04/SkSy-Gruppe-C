@@ -120,11 +120,11 @@ def passwortvergessen():
         email = request.form.get('email', '').strip().lower()
 
         #  DEBUG-Ausgabe ins Terminal
-        print("DEBUG: Eingegebene E-Mail:", email)
+        #print("DEBUG: Eingegebene E-Mail:", email)
         users = User.query.all()
-        print("DEBUG: E-Mails in DB:")
-        for u in users:
-            print("-", u.email)
+        #print("DEBUG: E-Mails in DB:")
+        #for u in users:
+            #print("-", u.email)
 
         user = User.query.filter(db.func.lower(User.email) == email).first()
 
