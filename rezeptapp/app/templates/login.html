@@ -1,184 +1,81 @@
-<!DOCTYPE html>
-<html lang="de">
+<!-- Verbindung mit CSS-Dokument -->
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Login</title>
-    <style> /*CSS*/
-    /* Mobile First Styles */
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 16px;
-        background-color: #f9f9f9;
-    }
-    Ich
-    * {
-        box-sizing: border-box;
-    }
-
-    .container { /*weißer Kasten*/
-        max-width: 400px;
-        margin: auto;
-        background: white;
-        padding: 24px; /*Rand*/
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-        height: 100vh;
-    }
-
-    .top-selection {
-        position: relative;
-        display: flex;
-        justify-content: space-between; /* Mittig ausrichten */
-        align-items: center;
-        gap: 50px; /* Abstand zwischen Elementen */
-        margin-bottom: 12px;
-        font-size: 18px;
-        user-select: none;
-        border-bottom: 1px solid #ccc; /* untere Trennerlinie */
-        padding-bottom: 8px;
-    }
-
-    /* Einzelne Tabs als Flex-Items */
-    .tab {
-        width: 50%; /* je Hälfte */
-        text-align: center;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding-bottom: 4px;
-
-        color: #555;
-        cursor: pointer;
-        transition: color 0.3s, border-color 0.3s;
-    }
-
-    /* Aktiver Tab mit blauer Linie unten und Farbe */
-    .tab.active {
-        border-color: #007bff;
-        color: #007bff;
-    }
-
-    /* Trennlinie zwischen den Tabs (außer beim letzten) */
-    .divider {
-        position: absolute; /* absolut positionieren */
-        left: 50%; /* horizontal Mitte vom Container */
-        transform: translateX(-50%); /* genau zentrieren */
-        width: 1px;
-        height: 20px;
-        justify-content: center; /* Mittig ausrichten */
-        background-color: #ccc;
-    }
-
-    input {
-        width: 100%;
-        margin: 12px 0;
-        padding: 12px;
-        font-size: 16px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-    }
-
-
-    button {
-        text-align: center;
-        width: 70%;
-        margin: 12px 0;
-        padding: 12px;
-        font-size: 16px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        background-color: #007bff;
-        color: white;
-        border: none;
-
-    }
-
-    button:hover {
-        background-color: #0056b3;
-    }
-
-    h4,
-    a.h4 {
-        font-size: 11px;
-        color: #007bff;
-        margin-top: 0;
-        margin-bottom: 12px;
-        display: inline-block;
-    }
-
-    .flashes {
-    list-style-type: none;
-    padding: 0;
-    margin-bottom: 16px;
-    color: red;
-    }
-
-    .flashes li.error {
-    color: red;
-    }
-
-    .flashes li.success {
-        color: green;
-    }
-
-    </style>
-
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
-
-
 <div class="container">
-    <!-- Um Fehlermeldungen ausgeben zu können (gerne später noch eleganter implementieren) -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <ul class="flashes">
-          {% for category, message in messages %}
-            <li class="{{ category }}">{{ message }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
 
+    {% if active_tab != 'passwortvergessen' and active_tab != 'passwortneu' %}
     <div class="top-selection">
         <a href="{{ url_for('auth.login', tab='login') }}"
-           class="tab {% if active_tab == 'login' %}active{% endif %}">Login</a>
+           class="tab link {% if active_tab == 'login' %}active{% endif %}">Login</a>
         <div class="divider"></div>
         <a href="{{ url_for('auth.login', tab='register') }}"
-           class="tab {% if active_tab == 'register' %}active{% endif %}">Registrierung</a>
+           class="tab link {% if active_tab == 'register' %}active{% endif %}">Registrierung</a>
     </div>
+    {% endif %}
+
+    <!-- LOGIN -->
     {% if active_tab == 'login' %}
     <form method="post">
-        <input type="hidden" name="login" value="1">  <!-- Um die verschiedenen Forms unterscheiden zu können -->
+        <input type="hidden" name="login" value="1">
         <input type="email" name="email" placeholder="E-Mail" required/>
         <input type="password" name="password" placeholder="Passwort" required/>
+        <a href="{{ url_for('auth.passwortvergessen') }}" class="h4">Passwort vergessen?</a>
         <button type="submit">Einloggen</button>
     </form>
-    <a href="{{ url_for('auth.pw_reset_start') }}" class="h4">Passwort vergessen?</a>
 
+    <!-- PASSWORT VERGESSEN -->
+    {% elif active_tab == 'passwortvergessen' %}
+    <h2 class="tab">Passwort zurücksetzen</h2>
+    <form method="post" action="{{ url_for('auth.passwortvergessen') }}">
+        <input type="hidden" name="pw_reset" value="3">
+        <input type="email" name="email" placeholder="E-Mail-Adresse" required>
+        <button type="submit">Weiter</button>
+    </form>
+
+    <!-- SICHERHEITSFRAGE BEANTWORTEN -->
+    {% elif active_tab == 'passwortneu' %}
+    <h2 class="tab">Sicherheitsfrage beantworten</h2>
+    <form method="post" action="{{ url_for('auth.passwortneu') }}">
+        <label>{{ question }}</label>
+        <input type="text" name="answer" placeholder="Antwort" required>
+        <label>Neues Passwort:</label>
+        <input type="password" name="new_password" placeholder="Neues Passwort" required>
+        <button type="submit">Passwort ändern</button>
+    </form>
+
+    <!-- REGISTRIEREN -->
     {% elif active_tab == 'register' %}
     <form method="post">
         <input type="hidden" name="register" value="2">
-        <input type="text" id="username" name="username"  placeholder="Benutzername" required>
+        <input type="text" id="username" name="username" placeholder="Benutzername" required>
         <input type="email" id="email" name="email" placeholder="E-Mail" required>
         <input type="password" id="password" name="password" placeholder="Password" required>
-        <input type="password" id="confirm_password" name="confirm_password" placeholder="Password bestätigen"required>
-
-        <!-- Zufällig ausgewählte Sicherheitsfragen -->
+        <input type="password" id="confirm_password" name="confirm_password" placeholder="Password bestätigen" required>
+        <hr>
+        <label>Sicherheitsfragen:</label>
         {% for question in questions %}
-          <label>Sicherheitsfrage {{ loop.index }}:</label>
-          <input type="text" name="question{{ loop.index }}" value="{{ question }}" readonly>
-          <input type="text" name="answer{{ loop.index }}" placeholder="Antwort {{ loop.index }}" required>
+        <input type="text" name="answer{{ loop.index }}" placeholder="{{ question }}" required>
         {% endfor %}
         <button type="submit" class="submit-btn">Registrieren</button>
     </form>
-
-    {# gelöscht: {% elif active_tab == 'passwortVergessen'... %} #}
-
     {% endif %}
+
+    <!-- Fehlermeldungen -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for category, message in messages %}
+        <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
 </div>
-
 </body>
-
