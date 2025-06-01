@@ -1,0 +1,186 @@
+/*Grundlayout Hintergrund*/
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 16px;
+    background-color: #86989B !important;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+
+/*Grundlegender Container*/
+.container {
+    max-width: 400px;
+    margin: auto;
+    background: white;
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    min-height: 100vh; /*minimal ganzer Bildschirm, bei scrollen Container vergrößern*/
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1.5px solid #9DC183;
+    margin-top: 15px; /* fester Abstand nach oben */
+    margin-bottom: 0; /* unten standardmäßig kein Abstand */
+}
+
+button {
+    width: 60%;
+    margin: 15px auto;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: none;
+    background-color: #00008B;
+    color: white;
+    cursor: pointer;
+    display: block;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/*Grundstruktur Tabaufbau*/
+.top-selection {
+    display: flex; /*horizontale Anordung*/
+    align-items: center; /*richtet Tabs vertikal zentriert aus*/
+    margin-bottom: 6px;
+    font-size: 18px;
+    border-bottom: 3px solid #9DC183;
+    padding-bottom: 14px;
+}
+
+/*Seiten Überschrift*/
+.tab {
+    white-space: nowrap;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #9DC183;
+    font-weight: bold;
+}
+
+/*Tab Design*/
+.tab.link {
+    width: 50%;
+    color: #9DC183;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+/*Ausgewählten Tab hervorheben*/
+.tab.active {
+    color: #00008B;
+}
+
+/*Trennstrich*/
+.divider {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 20px;
+    background-color: #9DC183;
+}
+
+hr {
+    border: none;
+    height: 3px;
+    background-color: #9DC183;
+    margin-top: 24px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 15px;
+    font-size: 15px;
+    color: #00008B;
+}
+
+h4,
+a.h4 {
+    margin-top: 10px;
+    font-size: 11px;
+    color: #00008B;
+    display: inline-block;
+}
+
+
+/*Dashboard Button*/
+
+.top-right-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.top-right-btn:hover {
+    background-color: #f0f0f0;
+}
+
+/*Flashes - Fehlermeldungen*/
+.flashes {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 16px;
+    color: red;
+}
+
+.flashes li.error {
+    color: red;
+}
+
+.flashes li.success {
+    color: green;
+}
+
+/*HTML ELEMENTE
+
+Element     |Beschreibung
+div	        |Block-Container(generisch)
+span	    |Inline-Container (generisch)
+p	        |Absatz
+h1–h6	    |Überschriften (von groß bis klein)
+a	        |Link
+ul	        |Ungeordnete Liste
+ol	        |Geordnete Liste
+li	        |Listenelement
+table	    |Tabelle
+tr	        |Tabellenzeile
+td	        |Tabellenzelle
+th	        |Tabellenüberschrift
+form	    |Formular
+input	    |Eingabefeld
+button	    |Knopf
+img	        |Bild
+header	    |Kopfbereich
+footer	    |Fußbereich
+nav	        |Navigation
+section	    |Abschnitt
+article	    |Artikel
+aside	    |Seitenleiste, Zusatzinfo
+main	    |Hauptinhalt
+label	    |Label für Formularfelder
+*/
