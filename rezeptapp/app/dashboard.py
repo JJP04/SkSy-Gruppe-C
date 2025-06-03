@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, flash, redirect, url_for
+from flask import Blueprint, render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user, logout_user
 from .models import User
 from .extensions import db
@@ -32,3 +32,19 @@ def profil_loeschen():
         flash("Dein Profil wurde erfolgreich gelöscht.", "info")
 
     return redirect(url_for("auth.login"))
+
+@dashboard_bp.route('/profil/bearbeiten', methods=['GET', 'POST'])
+@login_required
+def profil_bearbeiten():
+    if request.method == 'POST':
+        neuer_name = request.form.get('username')
+        neue_email = request.form.get('email')
+
+        current_user.username = neuer_name
+        current_user.email = neue_email
+
+        db.session.commit()
+        flash('Profil aktualisiert.', 'success')
+        return redirect(url_for('dashboard.profil'))
+
+    return render_template('profil_bearbeiten.html', user=current_user)
