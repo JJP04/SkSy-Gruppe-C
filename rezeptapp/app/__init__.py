@@ -31,6 +31,8 @@ def create_app():
         model="edwardjross/xlm-roberta-base-finetuned-recipe-all",
         tokenizer="edwardjross/xlm-roberta-base-finetuned-recipe-all",
         aggregation_strategy="simple"
+
+
     )
 
     from .auth import auth_bp
