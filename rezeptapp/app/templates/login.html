@@ -10,7 +10,7 @@
 <div class="container">
 
     {% if active_tab != 'passwortvergessen' and active_tab != 'passwortneu' %}
-    <div class="top-selection">
+    <div class="header selection">
         <a href="{{ url_for('auth.login', tab='login') }}"
            class="tab link {% if active_tab == 'login' %}active{% endif %}">Login</a>
         <div class="divider"></div>
@@ -31,7 +31,10 @@
 
     <!-- PASSWORT VERGESSEN -->
     {% elif active_tab == 'passwortvergessen' %}
-    <h2 class="tab">Passwort zurücksetzen</h2>
+    <div class="header">
+        <h1>Passwort zurücksetzen</h1>
+    </div>
+
     <form method="post" action="{{ url_for('auth.passwortvergessen') }}">
         <input type="hidden" name="pw_reset" value="3">
         <input type="email" name="email" placeholder="E-Mail-Adresse" required>
@@ -40,7 +43,9 @@
 
     <!-- SICHERHEITSFRAGE BEANTWORTEN -->
     {% elif active_tab == 'passwortneu' %}
-    <h2 class="tab">Sicherheitsfrage beantworten</h2>
+    <div class="header">
+        <h1>Passwort zurücksetzen</h1>
+    </div>
     <form method="post" action="{{ url_for('auth.passwortneu') }}">
         <label>{{ question }}</label>
         <input type="text" name="answer" placeholder="Antwort" required>
