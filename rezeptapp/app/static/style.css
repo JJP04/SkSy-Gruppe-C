@@ -15,7 +15,7 @@ body {
     max-width: 400px;
     margin: auto;
     background: white;
-    padding: 24px;
+    padding: 12px 24px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
     min-height: 100vh; /*minimal ganzer Bildschirm, bei scrollen Container vergrößern*/
@@ -52,20 +52,40 @@ button:hover {
     background-color: #0056b3;
 }
 
-/*Lässt sich nicht anzeigen als Button mit link*/
-a.button.anmelden {
-    width: 100px;
-    height: 35px;
-    font-size: 13px;
-    margin: 0;
+a.linkbutton {
+    width: 200px;
+    height: 45px;
+    font-size: 16px;
+    margin: 15px auto;
+    border-radius: 8px;
+    background-color: #00008B;
+    color: white;
+    cursor: pointer;
+    display: block;
     text-align: center;
     line-height: 35px;
     text-decoration: none;
 }
 
+a.linkbutton.anmelden {
+    width: 100px;
+    height: 35px;
+    font-size: 13px;
+    margin: 0;
+}
+
+a.linkbutton.hinzufügen {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    font-size: 20px;
+}
+
+
 /*--------------------------------HEADER-----------------------------------*/
 .header {
     border-bottom: 3px solid #9DC183;
+    padding-bottom: 5px;
 }
 
 .header.dashboard {
@@ -87,7 +107,7 @@ a.button.anmelden {
 .footer.dashboard {
     margin-top: auto;
     border-top: 3px solid #9DC183;
-    padding: 10px 20px;
+    padding: 5px;
     align-items: center;
     justify-content: space-between;
 }
