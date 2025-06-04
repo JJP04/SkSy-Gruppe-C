@@ -10,7 +10,6 @@ body {
     box-sizing: border-box;
 }
 
-
 /*Grundlegender Container*/
 .container {
     max-width: 400px;
@@ -20,6 +19,9 @@ body {
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
     min-height: 100vh; /*minimal ganzer Bildschirm, bei scrollen Container vergrößern*/
+    display: flex;
+    flex-direction: column; /* Stapelt Kinder vertikal */
+
 }
 
 input {
@@ -32,12 +34,13 @@ input {
     margin-bottom: 0; /* unten standardmäßig kein Abstand */
 }
 
+/*--------------------------------BUTTONS-----------------------------------*/
 button {
-    width: 60%;
-    margin: 15px auto;
-    padding: 12px;
+    width: 200px;
+    height: 45px;
     font-size: 16px;
-    border-radius: 6px;
+    margin: 15px auto;
+    border-radius: 8px;
     border: none;
     background-color: #00008B;
     color: white;
@@ -49,15 +52,84 @@ button:hover {
     background-color: #0056b3;
 }
 
-/*Grundstruktur Tabaufbau*/
-.top-selection {
+/*Lässt sich nicht anzeigen als Button mit link*/
+a.button.anmelden {
+    width: 100px;
+    height: 35px;
+    font-size: 13px;
+    margin: 0;
+    text-align: center;
+    line-height: 35px;
+    text-decoration: none;
+}
+
+/*--------------------------------HEADER-----------------------------------*/
+.header {
+    border-bottom: 3px solid #9DC183;
+}
+
+.header.dashboard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Button links, Überschrift rechts */
+}
+
+.header.selection {
     display: flex; /*horizontale Anordung*/
     align-items: center; /*richtet Tabs vertikal zentriert aus*/
     margin-bottom: 6px;
     font-size: 18px;
-    border-bottom: 3px solid #9DC183;
     padding-bottom: 14px;
 }
+
+
+/*--------------------------------Footer-----------------------------------*/
+.footer.dashboard {
+    margin-top: auto;
+    border-top: 3px solid #9DC183;
+    padding: 10px 20px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/*--------------------------------ÜBERSCHRIFTEN-----------------------------------*/
+h1, h2, h4 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #9DC183;
+    padding: 8px 0;
+}
+
+h1 {
+    text-align: center;
+}
+
+a.h4 {
+    margin-top: 10px;
+    font-size: 11px;
+    display: inline-block;
+}
+
+/*--------------------------------TRENNELEMENTE-----------------------------------*/
+.divider { /*Horizontaler Strich*/
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 20px;
+    background-color: #9DC183;
+}
+
+hr { /*vertikaler Strich*/
+    border: none;
+    height: 3px;
+    background-color: #9DC183;
+    margin-top: 24px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
 
 /*Seiten Überschrift*/
 .tab {
@@ -82,25 +154,6 @@ button:hover {
     color: #00008B;
 }
 
-/*Trennstrich*/
-.divider {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 3px;
-    height: 20px;
-    background-color: #9DC183;
-}
-
-hr {
-    border: none;
-    height: 3px;
-    background-color: #9DC183;
-    margin-top: 24px;
-    margin-bottom: 10px;
-    width: 100%;
-}
-
 
 label {
     font-weight: bold;
@@ -108,36 +161,6 @@ label {
     margin-top: 15px;
     font-size: 15px;
     color: #00008B;
-}
-
-h4,
-a.h4 {
-    margin-top: 10px;
-    font-size: 11px;
-    color: #00008B;
-    display: inline-block;
-}
-
-
-/*Dashboard Button*/
-
-.top-right-btn {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-
-    background-color: white;
-    color: black;
-    border: 1px solid black;
-    border-radius: 6px;
-    padding: 6px 10px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.top-right-btn:hover {
-    background-color: #f0f0f0;
 }
 
 /*Flashes - Fehlermeldungen*/
