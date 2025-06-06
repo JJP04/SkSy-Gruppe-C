@@ -15,7 +15,7 @@ body {
     max-width: 400px;
     margin: auto;
     background: white;
-    padding: 12px 24px;
+    padding: 15px 24px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
     min-height: 100vh; /*minimal ganzer Bildschirm, bei scrollen Container vergrößern*/
@@ -67,7 +67,7 @@ a.linkbutton {
     text-decoration: none;
 }
 
-a.linkbutton.anmelden {
+a.linkbutton.dashboard {
     width: 100px;
     height: 35px;
     font-size: 13px;
@@ -79,7 +79,10 @@ a.linkbutton.hinzufügen {
     height: 45px;
     border-radius: 50%;
     font-size: 20px;
+    margin: 0;
+    line-height: 45px;
 }
+
 
 
 /*--------------------------------HEADER-----------------------------------*/
@@ -104,10 +107,14 @@ a.linkbutton.hinzufügen {
 
 
 /*--------------------------------Footer-----------------------------------*/
-.footer.dashboard {
+.footer {
     margin-top: auto;
     border-top: 3px solid #9DC183;
-    padding: 5px;
+    padding-top: 5px;
+
+}
+.footer.dashboard {
+    display: flex;
     align-items: center;
     justify-content: space-between;
 }
@@ -123,6 +130,14 @@ h1, h2, h4 {
 
 h1 {
     text-align: center;
+}
+
+h3 {
+    font-weight: bold;
+    display: block;
+    margin-top: 15px;
+    font-size: 15px;
+    color: #00008B;
 }
 
 a.h4 {
@@ -175,13 +190,7 @@ hr { /*vertikaler Strich*/
 }
 
 
-label {
-    font-weight: bold;
-    display: block;
-    margin-top: 15px;
-    font-size: 15px;
-    color: #00008B;
-}
+
 
 /*Flashes - Fehlermeldungen*/
 .flashes {
