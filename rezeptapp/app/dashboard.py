@@ -1,23 +1,27 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user, logout_user
-from .models import User
+
+from .models import User, Recipe
 from .extensions import db
 
-#für die profilansicht
+# für die profilansicht
 
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
-@dashboard_bp.route('/dashboard')
-def dashboard():
-    return render_template('dashboard.html')
 
+@dashboard_bp.route('/dashboard')
+def rezepte():
+    r = Recipe.query.all()
+    print("Rezepte geladen:", r)
+    return render_template("dashboard.html", rezepte=r)
 
 
 @dashboard_bp.route('/profil')
 @login_required
 def profil():
     return render_template('profile.html', user=current_user)
+
 
 @dashboard_bp.route("/profil/loeschen", methods=["POST"])
 @login_required
@@ -32,6 +36,7 @@ def profil_loeschen():
         flash("Dein Profil wurde erfolgreich gelöscht.", "info")
 
     return redirect(url_for("auth.login"))
+
 
 @dashboard_bp.route('/profil/bearbeiten', methods=['GET', 'POST'])
 @login_required

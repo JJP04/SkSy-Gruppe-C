@@ -16,12 +16,21 @@
         {% endif %}
     </header>
     <h3>Rezepte der Woche</h3>
+    <div class="container-rezepte">
+        {% for rezept in rezepte %}
+        <div class="cardRezepte">
+            <div class="card-text">{{rezept.title}}</div>
+        </div>
+        {% endfor %}
+    </div>
+    <h3>Favoriten</h3>
+    <div class="rezepticon">
+    </div>
 
     <footer class="footer dashboard">
         <a href="/dashboard" class="linkbutton dashboard">Home</a>
         <a href="/recipe/create" class="linkbutton hinzufügen">+</a>
         <a href="/profil" class="linkbutton dashboard">Mein Profil</a>
-
     </footer>
 </div>
 </body>
