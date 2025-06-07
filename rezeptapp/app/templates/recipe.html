@@ -1,195 +1,140 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Rezept anlegen</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rezept erstellen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 16px;
-            background-color: #f9f9f9;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        .container {
-            max-width: 500px;
-            margin: auto;
-            background: white;
-            padding: 24px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .top-selection {
+        /* Add styles for ingredient input + delete button */
+        #ingredients-fields {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .ingredient-item {
+            display: flex;
             align-items: center;
-            gap: 50px;
-            margin-bottom: 16px;
-            font-size: 18px;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 8px;
-        }
 
-        .tab {
-            width: 50%;
-            text-align: center;
-            padding-bottom: 4px;
-            color: #555;
-            cursor: pointer;
-            transition: color 0.3s;
+            margin-bottom: 6px;
         }
-
-        .tab.active {
-            color: #007bff;
-            border-bottom: 2px solid #007bff;
-        }
-
-        .divider {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 1px;
-            height: 20px;
-            background-color: #ccc;
-        }
-
-        h4,
-        a.h4 {
-            font-size: 11px;
-            color: #007bff;
-            margin-top: 0;
-            margin-bottom: 12px;
-            display: inline-block;
-        }
-
-        input, textarea, select {
-            width: 100%;
-            padding: 12px;
-            margin-top: 8px;
-            margin-bottom: 16px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 6px;
+        .ingredient-input {
+            box-sizing: border-box;
+            height: 36px;
+            padding: 8px 12px;
             font-size: 16px;
+            border-radius: 6px 0 0 6px;
+            border: 1.5px solid #9DC183;
+            border-right: none;
+            line-height: 1.3;
+            flex-grow: 1;
+            margin: 0;
+        }
+        .delete-ingredient {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0 8px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            border-radius: 0 6px 6px 0;
+            border: 1.5px solid #9DC183;
+            border-left: none;
+            background-color: #f44336;
+            color: white;
             cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            width: 36px;
+        }
+        .delete-ingredient:hover {
+            background-color: #d32f2f;
         }
 
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        ul {
-            padding-left: 16px;
-        }
-
-        .flashes {
-            list-style-type: none;
-            padding: 0;
-            margin-bottom: 16px;
-        }
-
-        .flashes li.error { color: red; }
-        .flashes li.success { color: green; }
-
-        .ingredient-list {
-            list-style: none;
-            padding: 0;
-            margin-top: 12px;
-        }
-
-        .ingredient-list li {
-            background-color: #e8f0fe;
-            padding: 10px 14px;
-            margin-bottom: 8px;
+        button[type="button"].add-ingredient {
+            margin-bottom: 25px;
+            font-size: 16px;
+            padding: 12px;
             border-radius: 6px;
-            font-size: 15px;
-            color: #333;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            transition: background-color 0.3s;
+            border: 1.5px solid #9DC183;
+            background-color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
-
-        .ingredient-list li:hover {
-            background-color: #d2e3fc;
+        button[type="button"].add-ingredient:hover {
+            background-color: #9DC183;
+            color: white;
         }
-
-        .no-ingredients {
-            color: #999;
-            font-style: italic;
-            margin-top: 12px;
-        }
-
     </style>
+
 </head>
 <body>
 
 <div class="container">
-    {% set all_messages = get_flashed_messages(with_categories=true) %}
-    {% if all_messages %}
-      <ul class="flashes">
-        {% for category, message in all_messages %}
-          {% if category not in ['hidden', 'debug'] %}
-            <li class="{{ category }}">{{ message }}</li>
-          {% endif %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for category, message in messages %}
+        {% if category not in ['hidden', 'debug'] %}
+        <li class="{{ category }}">{{ message }}</li>
+        {% endif %}
         {% endfor %}
-      </ul>
+    </ul>
     {% endif %}
+    {% endwith %}
 
     {% if active_tab == 'create' %}
     <form method="post" action="{{ url_for('recipe.analyze') }}">
-        <label for="title">Rezept-Titel:</label>
-        <input type="text" id="title" name="title" required>
 
-        <label for="description">Beschreibung:</label>
-        <textarea id="description" name="description" rows="6" required></textarea>
+        <div class="header">
+            <h1>Rezept erstellen</h1>
+        </div>
 
-        <label for="visibility">Sichtbarkeit:</label>
-        <select id="visibility" name="visibility" required>
+        <input type="text" id="title" name="title" placeholder="Rezept-Titel" required>
+
+        <textarea id="description" name="description" rows="16" placeholder="Beschreibung" required style="width: 100%; margin-top: 15px; margin-bottom: 15px; resize: vertical;"></textarea>
+
+        <select id="visibility" name="visibility" required style="width: 100%; font-size: 16px; padding: 12px; margin-bottom: 15px; border-radius: 6px; border: 1.5px solid #9DC183;">
+            <option value="" disabled selected>Sichtbarkeit wählen</option>
             <option value="public">Öffentlich</option>
             <option value="private">Privat</option>
         </select>
 
         <button type="submit">Weiter</button>
     </form>
+
     {% elif active_tab == 'ingredients' %}
-    <h2 style="margin-top: 24px;">Zutaten-Vorschau</h2>
+    <div class="header">
+        <h1>Zutaten-Vorschau</h1>
+    </div>
         {% if ingredients %}
-            <form method="POST" action="{{ url_for('recipe.save') }}">
-                <input type="hidden" name="title" value="{{ title }}">
-                <input type="hidden" name="description" value="{{ description }}">
-                <input type="hidden" name="visibility" value="{{ visibility }}">
+        <form method="POST" action="{{ url_for('recipe.save') }}">
+            <input type="hidden" name="title" value="{{ title }}">
+            <input type="hidden" name="description" value="{{ description }}">
+            <input type="hidden" name="visibility" value="{{ visibility }}">
 
-                <h3>Original Rezepttext:</h3>
-                <p>{{ description }}</p>
+            <h3>Original Rezepttext:</h3>
+            <p>{{ description }}</p>
 
-                <p><strong>Bearbeite die Zutaten (löschen oder korrigieren möglich):</strong></p>
-                <div id="ingredients-fields">
-                    {% for item in ingredients %}
-                    <input type="text" name="ingredients[]" value="{{ item }}" class="ingredient-input">
-                    {% endfor %}
-                </div>
+            <h3>Bearbeite die Zutaten:</h3>
+            <div id="ingredients-fields">
+            {% for item in ingredients %}
+            <div class="ingredient-item">
+                <input type="text" name="ingredients[]" value="{{ item }}" placeholder="Zutat" class="ingredient-input">
+                <button type="button" class="delete-ingredient" aria-label="Zutat löschen">&times;</button>
+            </div>
+            {% endfor %}
+            </div>
 
-                <!-- Button: Neue Zutat hinzufügen -->
-                <button type="button" onclick="addIngredient()">+Neue Zutat</button>
-                <button type="submit">Rezept speichern</button>
-            </form>
+            <button type="button" onclick="addIngredient()">+ Neue Zutat</button>
+            <button type="submit">Rezept speichern</button>
+        </form>
         {% else %}
-            <p class="no-ingredients">Keine Zutaten erkannt.</p>
+        <p class="no-ingredients">Keine Zutaten erkannt.</p>
         {% endif %}
     {% endif %}
 
@@ -198,15 +143,38 @@
 <script>
 function addIngredient() {
     const container = document.getElementById("ingredients-fields");
+    const div = document.createElement("div");
+    div.className = "ingredient-item";
+
     const input = document.createElement("input");
-    input.setAttribute("type", "text");
-    input.setAttribute("name", "ingredients[]");
-    input.setAttribute("class", "ingredient-input");
-    input.setAttribute("placeholder", "Neue Zutat");
-    container.appendChild(input);
+    input.type = "text";
+    input.name = "ingredients[]";
+    input.placeholder = "Neue Zutat";
+    input.className = "ingredient-input";
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "delete-ingredient";
+    btn.setAttribute("aria-label", "Zutat löschen");
+    btn.innerHTML = "&times;";
+    btn.addEventListener("click", () => {
+        div.remove();
+    });
+
+    div.appendChild(input);
+    div.appendChild(btn);
+    container.appendChild(div);
 }
+
+// Attach delete handlers to existing buttons on page load
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".delete-ingredient").forEach(button => {
+        button.addEventListener("click", () => {
+            button.parentElement.remove();
+        });
+    });
+});
 </script>
 
 </body>
 </html>
-
