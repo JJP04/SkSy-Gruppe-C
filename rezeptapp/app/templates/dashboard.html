@@ -1,0 +1,37 @@
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<div class="container">
+    <header class="header dashboard">
+        <h1>Rezeptwelt.de</h1>
+        {% if current_user.is_authenticated %}
+        <a href="/recipe" class="linkbutton dashboard">Suchen</a>
+        {% else %}
+        <a href="/login" class="linkbutton dashboard">Anmelden</a>
+        {% endif %}
+    </header>
+    <h3>Rezepte der Woche</h3>
+    <div class="container-rezepte">
+        {% for rezept in rezepte %}
+        <div class="cardRezepte">
+            <div class="card-text">{{rezept.title}}</div>
+        </div>
+        {% endfor %}
+    </div>
+    <h3>Favoriten</h3>
+    <div class="rezepticon">
+    </div>
+
+    <footer class="footer dashboard">
+        <a href="/dashboard" class="linkbutton dashboard">Home</a>
+        <a href="/recipe/create" class="linkbutton hinzufügen">+</a>
+        <a href="/profil" class="linkbutton dashboard">Mein Profil</a>
+    </footer>
+</div>
+</body>
+

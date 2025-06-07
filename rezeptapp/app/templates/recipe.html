@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rezept erstellen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Add styles for ingredient input + delete button */
+        #ingredients-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .ingredient-item {
+            display: flex;
+            align-items: center;
+
+            margin-bottom: 6px;
+        }
+        .ingredient-input {
+            box-sizing: border-box;
+            height: 36px;
+            padding: 8px 12px;
+            font-size: 16px;
+            border-radius: 6px 0 0 6px;
+            border: 1.5px solid #9DC183;
+            border-right: none;
+            line-height: 1.3;
+            flex-grow: 1;
+            margin: 0;
+        }
+        .delete-ingredient {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0 8px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            border-radius: 0 6px 6px 0;
+            border: 1.5px solid #9DC183;
+            border-left: none;
+            background-color: #f44336;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            width: 36px;
+        }
+        .delete-ingredient:hover {
+            background-color: #d32f2f;
+        }
+
+        button[type="button"].add-ingredient {
+            margin-bottom: 25px;
+            font-size: 16px;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1.5px solid #9DC183;
+            background-color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button[type="button"].add-ingredient:hover {
+            background-color: #9DC183;
+            color: white;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for category, message in messages %}
+        {% if category not in ['hidden', 'debug'] %}
+        <li class="{{ category }}">{{ message }}</li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    {% if active_tab == 'create' %}
+    <form method="post" action="{{ url_for('recipe.analyze') }}">
+
+        <div class="header">
+            <h1>Rezept erstellen</h1>
+        </div>
+
+        <input type="text" id="title" name="title" placeholder="Rezept-Titel" required>
+
+        <textarea id="description" name="description" rows="16" placeholder="Beschreibung" required style="width: 100%; margin-top: 15px; margin-bottom: 15px; resize: vertical;"></textarea>
+
+        <select id="visibility" name="visibility" required style="width: 100%; font-size: 16px; padding: 12px; margin-bottom: 15px; border-radius: 6px; border: 1.5px solid #9DC183;">
+            <option value="" disabled selected>Sichtbarkeit wählen</option>
+            <option value="public">Öffentlich</option>
+            <option value="private">Privat</option>
+        </select>
+
+        <button type="submit">Weiter</button>
+    </form>
+
+    {% elif active_tab == 'ingredients' %}
+    <div class="header">
+        <h1>Zutaten-Vorschau</h1>
+    </div>
+        {% if ingredients %}
+        <form method="POST" action="{{ url_for('recipe.save') }}">
+            <input type="hidden" name="title" value="{{ title }}">
+            <input type="hidden" name="description" value="{{ description }}">
+            <input type="hidden" name="visibility" value="{{ visibility }}">
+
+            <h3>Original Rezepttext:</h3>
+            <p>{{ description }}</p>
+
+            <h3>Bearbeite die Zutaten:</h3>
+            <div id="ingredients-fields">
+            {% for item in ingredients %}
+            <div class="ingredient-item">
+                <input type="text" name="ingredients[]" value="{{ item }}" placeholder="Zutat" class="ingredient-input">
+                <button type="button" class="delete-ingredient" aria-label="Zutat löschen">&times;</button>
+            </div>
+            {% endfor %}
+            </div>
+
+            <button type="button" onclick="addIngredient()">+ Neue Zutat</button>
+            <button type="submit">Rezept speichern</button>
+        </form>
+        {% else %}
+        <p class="no-ingredients">Keine Zutaten erkannt.</p>
+        {% endif %}
+    {% endif %}
+
+</div>
+
+<script>
+function addIngredient() {
+    const container = document.getElementById("ingredients-fields");
+    const div = document.createElement("div");
+    div.className = "ingredient-item";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.name = "ingredients[]";
+    input.placeholder = "Neue Zutat";
+    input.className = "ingredient-input";
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "delete-ingredient";
+    btn.setAttribute("aria-label", "Zutat löschen");
+    btn.innerHTML = "&times;";
+    btn.addEventListener("click", () => {
+        div.remove();
+    });
+
+    div.appendChild(input);
+    div.appendChild(btn);
+    container.appendChild(div);
+}
+
+// Attach delete handlers to existing buttons on page load
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".delete-ingredient").forEach(button => {
+        button.addEventListener("click", () => {
+            button.parentElement.remove();
+        });
+    });
+});
+</script>
+
+</body>
+</html>

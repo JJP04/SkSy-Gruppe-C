@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Profil bearbeiten</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Profil bearbeiten</h1>
+
+    <form method="POST">
+        <label for="username">Benutzername:</label><br>
+        <input type="text" name="username" value="{{ user.username }}" required><br><br>
+
+        <label for="email">E-Mail:</label><br>
+        <input type="email" name="email" value="{{ user.email }}" required><br><br>
+
+        <button type="submit">Speichern</button>
+    </form>
+
+    <br>
+    <a href="{{ url_for('dashboard.profil') }}">Zurück zum Profil</a>
+</body>
+</html>

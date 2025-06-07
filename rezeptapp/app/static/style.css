@@ -1,0 +1,283 @@
+/*Grundlayout Hintergrund*/
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 16px;
+    background-color: #86989B !important;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/*Grundlegender Container*/
+.container {
+    max-width: 400px;
+    margin: auto;
+    background: white;
+    padding: 15px 24px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    min-height: 100vh; /*minimal ganzer Bildschirm, bei scrollen Container vergrößern*/
+    display: flex;
+    flex-direction: column; /* Stapelt Kinder vertikal */
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1.5px solid #9DC183;
+    margin-top: 15px; /* fester Abstand nach oben */
+    margin-bottom: 0; /* unten standardmäßig kein Abstand */
+}
+
+/*--------------------------------BUTTONS-----------------------------------*/
+button {
+    width: 200px;
+    height: 45px;
+    font-size: 16px;
+    margin: 15px auto;
+    border-radius: 8px;
+    border: none;
+    background-color: #00008B;
+    color: white;
+    cursor: pointer;
+    display: block;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+a.linkbutton {
+    width: 200px;
+    height: 45px;
+    font-size: 16px;
+    margin: 15px auto;
+    border-radius: 8px;
+    background-color: #00008B;
+    color: white;
+    cursor: pointer;
+    display: block;
+    text-align: center;
+    line-height: 35px;
+    text-decoration: none;
+}
+
+a.linkbutton.dashboard {
+    width: 100px;
+    height: 35px;
+    font-size: 13px;
+    margin: 0;
+}
+
+a.linkbutton.hinzufügen {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    font-size: 20px;
+    margin: 0;
+    line-height: 45px;
+}
+
+
+/*--------------------------------HEADER-----------------------------------*/
+.header {
+    border-bottom: 3px solid #9DC183;
+    padding-bottom: 5px;
+}
+
+.header.dashboard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Button links, Überschrift rechts */
+}
+
+.header.selection {
+    display: flex; /*horizontale Anordung*/
+    align-items: center; /*richtet Tabs vertikal zentriert aus*/
+    margin-bottom: 6px;
+    font-size: 18px;
+    padding-bottom: 14px;
+}
+
+
+/*--------------------------------Footer-----------------------------------*/
+.footer {
+    margin-top: auto;
+    border-top: 3px solid #9DC183;
+    padding-top: 5px;
+
+}
+
+.footer.dashboard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/*--------------------------------ÜBERSCHRIFTEN-----------------------------------*/
+h1, h2, h4 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #9DC183;
+    padding: 8px 0;
+}
+
+h1 {
+    text-align: center;
+}
+
+h3 {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: #00008B;
+}
+
+a.h4 {
+    margin-top: 10px;
+    font-size: 11px;
+    display: inline-block;
+}
+
+/*--------------------------------TRENNELEMENTE-----------------------------------*/
+.divider { /*Horizontaler Strich*/
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 20px;
+    background-color: #9DC183;
+}
+
+hr { /*vertikaler Strich*/
+    border: none;
+    height: 3px;
+    background-color: #9DC183;
+    margin-top: 24px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+/*--------------------------------SEITENELEMENTE-----------------------------------*/
+.container-rezepte {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+.cardRezepte {
+    position: relative;
+    width: 100px;
+    height: 150px;
+    border: 2px solid #9DC183;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+     transition: transform 0.3s ease;
+}
+
+.cardRezepte:hover {
+    transform: scale(1.1);
+}
+
+.card-img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    display: block;
+}
+
+.card-text {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 30px;
+    padding: 2px 5px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 30px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+
+
+
+/*--------------------------------STUFF-----------------------------------*/
+
+/*Seiten Überschrift*/
+.tab {
+    white-space: nowrap;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #9DC183;
+    font-weight: bold;
+}
+
+/*Tab Design*/
+.tab.link {
+    width: 50%;
+    color: #9DC183;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+/*Ausgewählten Tab hervorheben*/
+.tab.active {
+    color: #00008B;
+}
+
+
+/*Flashes - Fehlermeldungen*/
+.flashes {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 16px;
+    color: red;
+}
+
+.flashes li.error {
+    color: red;
+}
+
+.flashes li.success {
+    color: green;
+}
+
+/*HTML ELEMENTE
+
+Element     |Beschreibung
+div	        |Block-Container(generisch)
+span	    |Inline-Container (generisch)
+p	        |Absatz
+h1–h6	    |Überschriften (von groß bis klein)
+a	        |Link
+ul	        |Ungeordnete Liste
+ol	        |Geordnete Liste
+li	        |Listenelement
+table	    |Tabelle
+tr	        |Tabellenzeile
+td	        |Tabellenzelle
+th	        |Tabellenüberschrift
+form	    |Formular
+input	    |Eingabefeld
+button	    |Knopf
+img	        |Bild
+header	    |Kopfbereich
+footer	    |Fußbereich
+nav	        |Navigation
+section	    |Abschnitt
+article	    |Artikel
+aside	    |Seitenleiste, Zusatzinfo
+main	    |Hauptinhalt
+label	    |Label für Formularfelder
+*/

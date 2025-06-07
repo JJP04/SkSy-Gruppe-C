@@ -1,0 +1,87 @@
+<!-- Verbindung mit CSS-Dokument -->
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<div class="container">
+
+    {% if active_tab != 'passwortvergessen' and active_tab != 'passwortneu' %}
+    <div class="header selection">
+        <a href="{{ url_for('auth.login', tab='login') }}"
+           class="tab link {% if active_tab == 'login' %}active{% endif %}">Login</a>
+        <div class="divider"></div>
+        <a href="{{ url_for('auth.login', tab='register') }}"
+           class="tab link {% if active_tab == 'register' %}active{% endif %}">Registrierung</a>
+    </div>
+    {% endif %}
+
+    <!-- LOGIN -->
+    {% if active_tab == 'login' %}
+    <form method="post">
+        <input type="hidden" name="login" value="1">
+        <input type="email" name="email" placeholder="E-Mail" required/>
+        <input type="password" name="password" placeholder="Passwort" required/>
+        <a href="{{ url_for('auth.passwortvergessen') }}" class="h4">Passwort vergessen?</a>
+        <button type="submit">Einloggen</button>
+    </form>
+
+
+    {% elif active_tab == 'passwortvergessen' %}
+    <div class="header">
+        <h1>Passwort zurücksetzen</h1>
+    </div>
+
+    <form method="post" action="{{ url_for('auth.passwortvergessen') }}">
+        <input type="hidden" name="pw_reset" value="3">
+        <input type="email" name="email" placeholder="E-Mail-Adresse" required>
+        <button type="submit">Weiter</button>
+    </form>
+
+    <!-- SICHERHEITSFRAGE BEANTWORTEN -->
+    {% elif active_tab == 'passwortneu' %}
+    <div class="header">
+        <h1>Passwort zurücksetzen</h1>
+    </div>
+    <form method="post" action="{{ url_for('auth.passwortneu') }}">
+        <h3>{{ questions }}</h3>
+        <input type="text" name="answer" placeholder="Antwort" required>
+        <h3>Neues Passwort:</h3>
+        <input type="password" name="new_password" placeholder="Neues Passwort" required>
+        <button type="submit">Passwort ändern</button>
+    </form>
+
+    <!-- REGISTRIEREN -->
+    {% elif active_tab == 'register' %}
+    <form method="post">
+        <input type="hidden" name="register" value="2">
+        <input type="text" id="username" name="username" placeholder="Benutzername" required>
+        <input type="email" id="email" name="email" placeholder="E-Mail" required>
+        <input type="password" id="password" name="password" placeholder="Password" required>
+        <input type="password" id="confirm_password" name="confirm_password" placeholder="Password bestätigen" required>
+        <hr>
+        <label>Sicherheitsfragen:</label>
+        {% for question in questions %}
+        <input type="text" name="answer{{ loop.index }}" placeholder="{{ question }}" required>
+        {% endfor %}
+        <button type="submit" class="submit-btn">Registrieren</button>
+    </form>
+    {% endif %}
+
+    <!-- Fehlermeldungen -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for category, message in messages %}
+        <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+</div>
+</body>
+
