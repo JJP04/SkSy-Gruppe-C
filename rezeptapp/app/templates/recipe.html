@@ -168,27 +168,45 @@
     </form>
     {% elif active_tab == 'ingredients' %}
     <h2 style="margin-top: 24px;">Zutaten-Vorschau</h2>
+        {% if ingredients %}
+            <form method="POST" action="{{ url_for('recipe.save') }}">
+                <input type="hidden" name="title" value="{{ title }}">
+                <input type="hidden" name="description" value="{{ description }}">
+                <input type="hidden" name="visibility" value="{{ visibility }}">
 
-    {% if ingredients %}
-        <ul class="ingredient-list">
-            {% for item in ingredients %}
-                <li>{{ item }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p class="no-ingredients">Keine Zutaten erkannt.</p>
+                <h3>Original Rezepttext:</h3>
+                <p>{{ description }}</p>
+
+                <p><strong>Bearbeite die Zutaten (löschen oder korrigieren möglich):</strong></p>
+                <div id="ingredients-fields">
+                    {% for item in ingredients %}
+                    <input type="text" name="ingredients[]" value="{{ item }}" class="ingredient-input">
+                    {% endfor %}
+                </div>
+
+                <!-- Button: Neue Zutat hinzufügen -->
+                <button type="button" onclick="addIngredient()">+Neue Zutat</button>
+                <button type="submit">Rezept speichern</button>
+            </form>
+        {% else %}
+            <p class="no-ingredients">Keine Zutaten erkannt.</p>
+        {% endif %}
     {% endif %}
 
-    <form method="post" action="{{ url_for('recipe.save') }}">
-        <input type="hidden" name="title" value="{{ title }}">
-        <input type="hidden" name="description" value="{{ description }}">
-        <input type="hidden" name="visibility" value="{{ visibility }}">
-        <input type="hidden" name="ingredients" value="{{ ingredients | join(',') }}">
-        <button type="submit">Rezept speichern</button>
-    </form>
-    {% endif %}
     <a href="{{ url_for('dashboard.dashboard') }}" class="h4">Zurück ohne Speichern</a>
 </div>
+
+<script>
+function addIngredient() {
+    const container = document.getElementById("ingredients-fields");
+    const input = document.createElement("input");
+    input.setAttribute("type", "text");
+    input.setAttribute("name", "ingredients[]");
+    input.setAttribute("class", "ingredient-input");
+    input.setAttribute("placeholder", "Neue Zutat");
+    container.appendChild(input);
+}
+</script>
 
 </body>
 </html>
