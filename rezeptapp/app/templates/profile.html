@@ -11,7 +11,7 @@
     <p><strong>Benutzername:</strong> {{ user.username }}</p>
     <p><strong>E-Mail:</strong> {{ user.email }}</p>
 
-    <a href="{{ url_for('dashboard.dashboard') }}">Zurück zum Dashboard</a>
+
 
     <form action="{{ url_for('dashboard.profil_loeschen') }}" method="POST" onsubmit="return confirm('Willst du dein Profil wirklich löschen?')">
         <button type="submit" style="color: white; background-color: red; padding: 8px; border: none; border-radius: 4px;">

@@ -29,7 +29,7 @@
         <button type="submit">Einloggen</button>
     </form>
 
-    <!-- PASSWORT VERGESSEN -->
+
     {% elif active_tab == 'passwortvergessen' %}
     <div class="header">
         <h1>Passwort zurücksetzen</h1>
@@ -47,9 +47,9 @@
         <h1>Passwort zurücksetzen</h1>
     </div>
     <form method="post" action="{{ url_for('auth.passwortneu') }}">
-        <label>{{ question }}</label>
+        <h3>{{ questions }}</h3>
         <input type="text" name="answer" placeholder="Antwort" required>
-        <label>Neues Passwort:</label>
+        <h3>Neues Passwort:</h3>
         <input type="password" name="new_password" placeholder="Neues Passwort" required>
         <button type="submit">Passwort ändern</button>
     </form>

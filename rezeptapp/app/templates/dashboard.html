@@ -10,17 +10,27 @@
     <header class="header dashboard">
         <h1>Rezeptwelt.de</h1>
         {% if current_user.is_authenticated %}
-        <a href="/recipe" class="button anmelden">Suchen</a>
+        <a href="/recipe" class="linkbutton dashboard">Suchen</a>
         {% else %}
-        <a href="/login" class="button anmelden">Anmelden</a>
+        <a href="/login" class="linkbutton dashboard">Anmelden</a>
         {% endif %}
-
     </header>
-
+    <h3>Rezepte der Woche</h3>
+    <div class="container-rezepte">
+        {% for rezept in rezepte %}
+        <div class="cardRezepte">
+            <div class="card-text">{{rezept.title}}</div>
+        </div>
+        {% endfor %}
+    </div>
+    <h3>Favoriten</h3>
+    <div class="rezepticon">
+    </div>
 
     <footer class="footer dashboard">
-        <a href="{{ url_for('dashboard.profil') }}" class="h4">Mein Profil</a>
-        <a href="{{ url_for('recipe.create') }}" class="h4">Rezept erstellen</a>
+        <a href="/dashboard" class="linkbutton dashboard">Home</a>
+        <a href="/recipe/create" class="linkbutton hinzufügen">+</a>
+        <a href="/profil" class="linkbutton dashboard">Mein Profil</a>
     </footer>
 </div>
 </body>

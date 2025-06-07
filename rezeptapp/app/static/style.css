@@ -15,13 +15,12 @@ body {
     max-width: 400px;
     margin: auto;
     background: white;
-    padding: 24px;
+    padding: 15px 24px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
     min-height: 100vh; /*minimal ganzer Bildschirm, bei scrollen Container vergrößern*/
     display: flex;
     flex-direction: column; /* Stapelt Kinder vertikal */
-
 }
 
 input {
@@ -52,20 +51,42 @@ button:hover {
     background-color: #0056b3;
 }
 
-/*Lässt sich nicht anzeigen als Button mit link*/
-a.button.anmelden {
-    width: 100px;
-    height: 35px;
-    font-size: 13px;
-    margin: 0;
+a.linkbutton {
+    width: 200px;
+    height: 45px;
+    font-size: 16px;
+    margin: 15px auto;
+    border-radius: 8px;
+    background-color: #00008B;
+    color: white;
+    cursor: pointer;
+    display: block;
     text-align: center;
     line-height: 35px;
     text-decoration: none;
 }
 
+a.linkbutton.dashboard {
+    width: 100px;
+    height: 35px;
+    font-size: 13px;
+    margin: 0;
+}
+
+a.linkbutton.hinzufügen {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    font-size: 20px;
+    margin: 0;
+    line-height: 45px;
+}
+
+
 /*--------------------------------HEADER-----------------------------------*/
 .header {
     border-bottom: 3px solid #9DC183;
+    padding-bottom: 5px;
 }
 
 .header.dashboard {
@@ -84,10 +105,15 @@ a.button.anmelden {
 
 
 /*--------------------------------Footer-----------------------------------*/
-.footer.dashboard {
+.footer {
     margin-top: auto;
     border-top: 3px solid #9DC183;
-    padding: 10px 20px;
+    padding-top: 5px;
+
+}
+
+.footer.dashboard {
+    display: flex;
     align-items: center;
     justify-content: space-between;
 }
@@ -103,6 +129,15 @@ h1, h2, h4 {
 
 h1 {
     text-align: center;
+}
+
+h3 {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: #00008B;
 }
 
 a.h4 {
@@ -130,6 +165,53 @@ hr { /*vertikaler Strich*/
     width: 100%;
 }
 
+/*--------------------------------SEITENELEMENTE-----------------------------------*/
+.container-rezepte {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+.cardRezepte {
+    position: relative;
+    width: 100px;
+    height: 150px;
+    border: 2px solid #9DC183;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+     transition: transform 0.3s ease;
+}
+
+.cardRezepte:hover {
+    transform: scale(1.1);
+}
+
+.card-img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    display: block;
+}
+
+.card-text {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 30px;
+    padding: 2px 5px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 30px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+
+
+
+/*--------------------------------STUFF-----------------------------------*/
 
 /*Seiten Überschrift*/
 .tab {
@@ -154,14 +236,6 @@ hr { /*vertikaler Strich*/
     color: #00008B;
 }
 
-
-label {
-    font-weight: bold;
-    display: block;
-    margin-top: 15px;
-    font-size: 15px;
-    color: #00008B;
-}
 
 /*Flashes - Fehlermeldungen*/
 .flashes {
