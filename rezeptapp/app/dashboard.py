@@ -9,8 +9,12 @@ from .extensions import db
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
-
 @dashboard_bp.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
+
+@dashboard_bp.route('/dashboard/rezepte')
+@login_required
 def rezepte():
     r = Recipe.query.all()
     print("Rezepte geladen:", r)
