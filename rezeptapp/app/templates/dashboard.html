@@ -19,6 +19,9 @@
     <div class="container-rezepte">
         {% for rezept in rezepte %}
         <div class="cardRezepte">
+            <div class="card-img">
+                <img src="{{ url_for('static', filename=rezept.image_path) }}"/>
+            </div>
             <div class="card-text">{{rezept.title}}</div>
         </div>
         {% endfor %}
