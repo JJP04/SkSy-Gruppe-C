@@ -68,4 +68,4 @@ def save():
     db.session.add(neues_rezept)
     db.session.commit()
 
-    return redirect(url_for('dashboard.dashboard'))
+    return redirect(url_for('dashboard.rezepte'))

@@ -48,7 +48,7 @@ def login():
             if user and user.check_password(password):
                 # Login erfolgreich
                 login_user(user)
-                return redirect(url_for('dashboard.dashboard'))
+                return redirect(url_for('dashboard.rezepte'))
             else:
                 flash('Falsche Email oder Passwort.', 'error')
 
