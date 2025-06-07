@@ -107,4 +107,4 @@ def save():
     db.session.commit()
 
     flash("Rezept erfolgreich gespeichert!", "success")
-    return redirect(url_for('dashboard.dashboard'))
+    return redirect(url_for('dashboard.rezepte'))
