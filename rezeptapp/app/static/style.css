@@ -187,12 +187,14 @@ hr { /*vertikaler Strich*/
     transform: scale(1.1);
 }
 
-.card-img {
+.card-img img{
     width: 100%;
     height: 150px;
     object-fit: cover;
     display: block;
 }
+
+
 
 .card-text {
     position: absolute;

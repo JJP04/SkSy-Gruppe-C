@@ -1,19 +1,24 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, current_app
 from sqlalchemy import func
 from flask_login import current_user
+from werkzeug.utils import secure_filename
+import os
+
 from .models import User, Recipe, Ingredient, RecipeIngredient, RawIngredient
 from .extensions import db
 from difflib import get_close_matches
 
-#pip install transformers torch flask (braucht etwas länger ~3min)
-#used model: https://huggingface.co/edwardjross/xlm-roberta-base-finetuned-recipe-all
+# pip install transformers torch flask (braucht etwas länger ~3min)
+# used model: https://huggingface.co/edwardjross/xlm-roberta-base-finetuned-recipe-all
 
 
 recipe_bp = Blueprint('recipe', __name__)
 
+
 @recipe_bp.route('/recipe/create', methods=['GET'])
 def create():
-    return render_template('recipe.html', title="", ingredients=[], active_tab="create") #initiales laden von create
+    return render_template('recipe.html', title="", ingredients=[], active_tab="create")  # initiales laden von create
+
 
 @recipe_bp.route('/recipe/analyze', methods=['GET', 'POST'])
 def analyze():
@@ -26,13 +31,23 @@ def analyze():
         flash("Alle Felder sind erforderlich.", "error")
         return redirect(url_for('recipe.create'))
 
+    image = request.files.get('imageUpload')
+    image_path = ''
+
+    if image and image.filename.endswith('.jpg'):
+        filename = secure_filename(image.filename)
+        tmp_folder = os.path.join(current_app.root_path, 'static', 'Images')
+        full_path = os.path.join(tmp_folder, filename)
+        image.save(full_path)
+        image_path = f"images/{filename}"
+
     # NER-Modell aus dem Flask App-Context holen
     ner = current_app.ner_pipeline
 
     # Text analysieren
     ner_results = ner(description)
 
-    #print("→ KI-Rohantwort:", ner_results)
+    # print("→ KI-Rohantwort:", ner_results)
 
     # Extrahiere Zutaten, Mengen etc. je nach Modell-Output
     # Beispiel: alle Wörter aus Entities mit Label 'NAME' sammeln
@@ -46,13 +61,16 @@ def analyze():
 
     # Übergabe an neue Seite
     return render_template(
-        'recipe.html', active_tab='ingredients', ingredients=cleaned_ingredients, title=title, description=description, visibility=visibility
+        'recipe.html', active_tab='ingredients', ingredients=cleaned_ingredients, title=title, description=description,
+        visibility=visibility, image_path=image_path
     )
+
 
 # Ähnlichkeitsprüfung für neue Zutaten
 def finde_aehnliche_zutat(name, bekannte_zutaten, schwelle=0.8):
     matches = get_close_matches(name.lower(), bekannte_zutaten, n=1, cutoff=schwelle)
     return matches[0] if matches else None
+
 
 @recipe_bp.route('/recipe/save', methods=['GET', 'POST'])
 def save():
@@ -60,6 +78,7 @@ def save():
     description = request.form.get('description', '').strip()
     visibility = request.form.get('visibility', 'private')
     author = current_user
+    image_path = request.form.get('image_path', '')
 
     if not author.is_authenticated:
         flash("Nicht eingeloggt.", "error")
@@ -76,7 +95,8 @@ def save():
         title=title,
         description=description,
         visibility=visibility,
-        user_id=author.id  # wichtig: das User-FK-Feld
+        user_id=author.id,  # wichtig: das User-FK-Feld
+        image_path=image_path
     )
     db.session.add(neues_rezept)
 
