@@ -12,14 +12,18 @@ dashboard_bp = Blueprint('dashboard', __name__)
 @dashboard_bp.route('/dashboard')
 def rezepte():
     r = Recipe.query.all()
-    print("Rezepte geladen:", r)
     return render_template("dashboard.html", rezepte=r)
 
 
-@dashboard_bp.route('/profil')
+@dashboard_bp.route('/profile')
 @login_required
-def profil():
-    return render_template('profile.html', user=current_user)
+def profile():
+    r = Recipe.query.filter_by(user_id=current_user.id).all()
+    anzahl_rezepte = len(r)
+    print("Rezepte:", r)
+    print("Anzahl:", anzahl_rezepte)
+    return render_template('profile.html', user=current_user, rezepte=r, anzahl_rezepte=anzahl_rezepte)
+
 
 
 @dashboard_bp.route("/profil/loeschen", methods=["POST"])
@@ -49,6 +53,6 @@ def profil_bearbeiten():
 
         db.session.commit()
         flash('Profil aktualisiert.', 'success')
-        return redirect(url_for('dashboard.profil'))
+        return redirect(url_for('dashboard.profile'))
 
     return render_template('profil_bearbeiten.html', user=current_user)
