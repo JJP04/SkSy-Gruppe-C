@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user, logout_user
 
-from .models import User, Recipe
+from .models import User, Recipe, Ingredient, RecipeIngredient, RawIngredient
 from .extensions import db
 
 # für die profilansicht
@@ -62,4 +62,7 @@ def recipe_details(id):
     rezepte= Recipe.query.all()
     rezept = next((r for r in rezepte if r.id == id), None)
     user = User.query.get(rezept.user_id)
-    return render_template('recipe_details.html', rezept=rezept, creator=user)
+    zutaten = RawIngredient.query.filter_by(recipe_id=id).all()
+
+    print(zutaten)
+    return render_template('recipe_details.html', rezept=rezept, creator=user, zutaten=zutaten)

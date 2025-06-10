@@ -16,7 +16,12 @@
         <img class="card-image" src="{{ url_for('static', filename=rezept.image_path) }}" alt="{{ rezept.title }}">
         <h2>{{ rezept.title }}</h2>
         <h3> {{ rezept.description }}</h3>
-        <br>
+<h3>Zutaten:</h3>
+    <ul>
+        {% for zutat in zutaten %}
+            <li>{{ zutat.name }}</li>
+        {% endfor %}
+    </ul>        <br>
         <h3>Erstellt von: {{ creator.username if creator else "Unbekannter Benutzer" }}</h3>
     </div>
 </div>
