@@ -73,6 +73,46 @@
             background-color: #9DC183;
             color: white;
         }
+
+        mark.highlight {
+          background-color: #cde6bc;
+          color: #4a7031;
+          padding: 1px 5px;
+          border-radius: 4px;
+          font-weight: 600;
+          display: inline-block;
+          margin-bottom: 2px;
+          box-shadow: 0 0 3px 1px rgba(157, 193, 131, 0.4);
+          transition: background-color 0.3s ease;
+          cursor: default;
+          line-height: 1.1;
+          vertical-align: baseline;
+        }
+
+        #original-text {
+          line-height: 1.6;
+        }
+
+        /* Popup for adding selected ingredient */
+        #add-ingredient-popup {
+          position: absolute;
+          background-color: #9DC183;
+          color: white;
+          padding: 6px 12px;
+          border-radius: 6px;
+          font-weight: 600;
+          cursor: pointer;
+          user-select: none;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+          display: none;
+          z-index: 1000;
+          transition: background-color 0.3s ease;
+        }
+
+        #add-ingredient-popup:hover {
+          background-color: #7da359;
+        }
+
     </style>
 
 </head>
@@ -127,8 +167,8 @@
         <input type="hidden" name="visibility" value="{{ visibility }}">
         <input type="hidden" name="image_path" value="{{ image_path }}">
 
-        <h3>Original Rezepttext:</h3>
-        <p>{{ description }}</p>
+        <h3>Hochgeladenes Rezept:</h3>
+            <p id="original-text">{{ description }}</p>
 
         <h3>Bearbeite die Zutaten:</h3>
         <div id="ingredients-fields">
@@ -151,39 +191,200 @@
 </div>
 
 <script>
-    function addIngredient() {
-        const container = document.getElementById("ingredients-fields");
-        const div = document.createElement("div");
-        div.className = "ingredient-item";
+// Funktion: HTML special chars escapen (für sicheren Text)
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
 
-        const input = document.createElement("input");
-        input.type = "text";
-        input.name = "ingredients[]";
-        input.placeholder = "Neue Zutat";
-        input.className = "ingredient-input";
+// Funktion: Text mit Zutaten markieren (case-insensitive, ganze Wörter, auch multiword)
+function highlightText(text, ingredients) {
+  if (!text) return '';
 
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "delete-ingredient";
-        btn.setAttribute("aria-label", "Zutat löschen");
-        btn.innerHTML = "&times;";
-        btn.addEventListener("click", () => {
-            div.remove();
-        });
+  const escapedText = escapeHtml(text);
+  // Sort ingredients descending length so longer multi-word come first
+  ingredients.sort((a, b) => b.length - a.length);
+  // Escape regex special chars und ersetze Leerzeichen durch \s+ für multiword matching
+  const escapedIngredients = ingredients.map(i =>
+    i.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '\\s+')
+  );
+  const ingredientPattern = escapedIngredients.length
+    ? new RegExp('\\b(' + escapedIngredients.join('|') + ')\\b', 'gi')
+    : null;
 
-        div.appendChild(input);
-        div.appendChild(btn);
-        container.appendChild(div);
+  if (!ingredientPattern) return escapedText;
+
+  return escapedText.replace(ingredientPattern, match => {
+    return `<mark class="highlight">${match}</mark>`;
+  });
+}
+
+// Zutaten aus Inputs auslesen (getrimmt, non-empty)
+function getCurrentIngredients() {
+  const inputs = document.querySelectorAll('input[name="ingredients[]"]');
+  return Array.from(inputs)
+    .map(input => input.value.trim())
+    .filter(val => val.length > 0);
+}
+
+// Aktualisiere die Hervorhebung im Originaltext
+function updateHighlight() {
+  const originalTextEl = document.getElementById('original-text');
+  if (!originalTextEl) return;
+
+  const originalText = originalTextEl.getAttribute('data-original-text');
+  const ingredients = getCurrentIngredients();
+
+  originalTextEl.innerHTML = highlightText(originalText, ingredients);
+}
+
+// Zutaten hinzufügen mit Delete-Button + EventListener + Highlight Update
+function addIngredient(value = '') {
+  const container = document.getElementById("ingredients-fields");
+  const div = document.createElement("div");
+  div.className = "ingredient-item";
+
+  const input = document.createElement("input");
+  input.type = "text";
+  input.name = "ingredients[]";
+  input.placeholder = "Neue Zutat";
+  input.className = "ingredient-input";
+  input.value = value;
+
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "delete-ingredient";
+  btn.setAttribute("aria-label", "Zutat löschen");
+  btn.innerHTML = "&times;";
+
+  btn.addEventListener("click", () => {
+    div.remove();
+    updateHighlight();
+  });
+
+  div.appendChild(input);
+  div.appendChild(btn);
+  container.appendChild(div);
+
+  updateHighlight();
+}
+
+// Fügt ausgewählten Text als neue Zutat hinzu (ohne Duplikate)
+function addSelectedIngredient(word) {
+  if (!word) return;
+
+  const inputs = document.querySelectorAll('input[name="ingredients[]"]');
+  const lowerWord = word.toLowerCase();
+  for (const input of inputs) {
+    if (input.value.trim().toLowerCase() === lowerWord) {
+      return; // already present
     }
+  }
+  addIngredient(word);
+}
 
-    // Attach delete handlers to existing buttons on page load
-    document.addEventListener("DOMContentLoaded", () => {
-        document.querySelectorAll(".delete-ingredient").forEach(button => {
-            button.addEventListener("click", () => {
-                button.parentElement.remove();
-            });
-        });
+// Popup Button für Auswahl
+const addPopup = document.createElement('div');
+addPopup.id = 'add-ingredient-popup';
+addPopup.textContent = 'Zutat hinzufügen';
+document.body.appendChild(addPopup);
+
+function getSelectedTextInfo() {
+  const selection = window.getSelection();
+  if (selection.rangeCount === 0) return null;
+
+  const range = selection.getRangeAt(0);
+  const selectedText = selection.toString().trim();
+  if (!selectedText) return null;
+
+  const originalTextEl = document.getElementById('original-text');
+  if (!originalTextEl.contains(range.commonAncestorContainer)) return null;
+
+  const rect = range.getBoundingClientRect();
+  return { selectedText, rect };
+}
+
+function showAddPopup(textInfo) {
+  if (!textInfo) {
+    addPopup.style.display = 'none';
+    return;
+  }
+  const { rect } = textInfo;
+  addPopup.style.top = `${window.scrollY + rect.bottom + 5}px`;
+  addPopup.style.left = `${window.scrollX + rect.left}px`;
+  addPopup.style.display = 'block';
+}
+
+function addSelectedIngredientFromPopup() {
+  const textInfo = getSelectedTextInfo();
+  if (!textInfo) return;
+
+  addSelectedIngredient(textInfo.selectedText);
+
+  // Clear selection and hide popup
+  window.getSelection().removeAllRanges();
+  addPopup.style.display = 'none';
+}
+
+// Event listeners for selection and popup
+document.addEventListener('DOMContentLoaded', () => {
+  const originalTextEl = document.getElementById('original-text');
+  if (!originalTextEl) return;
+
+  // Originaltext in data-Attribut speichern für Wiederverwendung
+  originalTextEl.setAttribute('data-original-text', originalTextEl.textContent);
+
+  setupDeleteListeners();
+  setupInputListeners();
+  updateHighlight();
+
+  window.addIngredient = addIngredient;
+
+  // Show popup on text selection inside originalTextEl
+  originalTextEl.addEventListener('mouseup', () => {
+    const textInfo = getSelectedTextInfo();
+    if (textInfo) {
+      showAddPopup(textInfo);
+    } else {
+      addPopup.style.display = 'none';
+    }
+  });
+
+  // Hide popup if clicking outside
+  document.addEventListener('mousedown', e => {
+    if (!addPopup.contains(e.target) && !originalTextEl.contains(e.target)) {
+      addPopup.style.display = 'none';
+    }
+  });
+
+  addPopup.addEventListener('click', addSelectedIngredientFromPopup);
+});
+
+// Hilfsfunktionen: Delete-Buttons EventListener
+function setupDeleteListeners() {
+  const container = document.getElementById('ingredients-fields');
+  if (!container) return;
+
+  container.querySelectorAll('.delete-ingredient').forEach(button => {
+    button.addEventListener('click', () => {
+      button.parentElement.remove();
+      updateHighlight();
     });
+  });
+}
+
+// Event-Listener für Input-Änderungen auf Zutatenfelder
+function setupInputListeners() {
+  const container = document.getElementById('ingredients-fields');
+  if (!container) return;
+
+  container.addEventListener('input', e => {
+    if (e.target.matches('input[name="ingredients[]"]')) {
+      updateHighlight();
+    }
+  });
+}
 </script>
 
 </body>
