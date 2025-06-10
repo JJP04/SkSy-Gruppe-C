@@ -56,3 +56,10 @@ def profil_bearbeiten():
         return redirect(url_for('dashboard.profile'))
 
     return render_template('profil_bearbeiten.html', user=current_user)
+
+@dashboard_bp.route('/recipe/<int:id>')
+def recipe_details(id):
+    rezepte= Recipe.query.all()
+    rezept = next((r for r in rezepte if r.id == id), None)
+    user = User.query.get(rezept.user_id)
+    return render_template('recipe_details.html', rezept=rezept, creator=user)

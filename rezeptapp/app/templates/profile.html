@@ -33,10 +33,12 @@
  <h2>Meine Rezepte</h2>
  <div class="container-rezepte">
     {% for rezept in rezepte %}
+             <a class="recipe-details" href="{{ url_for('dashboard.recipe_details', id=rezept.id) }}">
     <div class="card-rezept">
         <img class="card-image" src="{{ url_for('static', filename=rezept.image_path) }}" alt="{{ rezept.title }}">
         <div class="card-title">{{ rezept.title }}</div>
     </div>
+             </a>
     {% endfor %}
 </div>
 <footer class="footer dashboard">
