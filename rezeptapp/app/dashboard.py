@@ -19,8 +19,8 @@ def rezepte():
 @dashboard_bp.route('/profil')
 @login_required
 def profil():
-    return render_template('profile.html', user=current_user)
-
+    user_recipes = Recipe.query.filter_by(user_id=current_user.id).all()
+    return render_template('profile.html', user=current_user, user_recipes=user_recipes)
 
 @dashboard_bp.route("/profil/loeschen", methods=["POST"])
 @login_required

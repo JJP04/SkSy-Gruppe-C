@@ -1,24 +1,57 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Profil bearbeiten</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Profil bearbeiten</h1>
+<div class="container">
+    <!-- ---------- Header ---------- -->
+    <header class="header dashboard">
+        <h1>Rezeptwelt.de</h1>
+        {% if current_user.is_authenticated %}
+        <a href="/recipe" class="linkbutton dashboard">Suchen</a>
+        {% else %}
+        <a href="/login" class="linkbutton dashboard">Anmelden</a>
+        {% endif %}
+    </header>
 
-    <form method="POST">
-        <label for="username">Benutzername:</label><br>
-        <input type="text" name="username" value="{{ user.username }}" required><br><br>
+    <!-- ---------- Page Title ---------- -->
+    <h3>Profil bearbeiten</h3>
 
-        <label for="email">E-Mail:</label><br>
-        <input type="email" name="email" value="{{ user.email }}" required><br><br>
+    <!-- ---------- Flash Messages ---------- -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+
+    <form method="POST" style="margin-top:10px; display:flex; flex-direction:column; gap:6px;">
+        <label for="username">Benutzername:</label>
+        <input type="text" id="username" name="username" value="{{ user.username }}" required>
+
+        <label for="email">E‑Mail:</label>
+        <input type="email" id="email" name="email" value="{{ user.email }}" required>
 
         <button type="submit">Speichern</button>
     </form>
 
-    <br>
-    <a href="{{ url_for('dashboard.profil') }}">Zurück zum Profil</a>
+
+    <a href="{{ url_for('dashboard.profil') }}" class="linkbutton" style="max-width:200px;">Zurück zum Profil</a>
+
+
+    <footer class="footer dashboard">
+        <a href="/dashboard" class="linkbutton dashboard">Home</a>
+        <a href="/recipe/create" class="linkbutton hinzufügen">+</a>
+        <a href="/profil" class="linkbutton dashboard">Mein Profil</a>
+    </footer>
+</div>
 </body>
 </html>
