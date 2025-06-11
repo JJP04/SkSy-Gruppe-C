@@ -1,0 +1,28 @@
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Recipe Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <header class="header dashboard">
+        <h1>Rezeptwelt.de</h1>
+        <a href="/dashboard" class="linkbutton dashboard">Zurück</a>
+    </header>
+
+    <div class="recipe-details">
+        <img class="card-image" src="{{ url_for('static', filename=rezept.image_path) }}" alt="{{ rezept.title }}">
+        <h2>{{ rezept.title }}</h2>
+        <h3> {{ rezept.description }}</h3>
+<h3>Zutaten:</h3>
+    <ul>
+        {% for zutat in zutaten %}
+            <li>{{ zutat.name }}</li>
+        {% endfor %}
+    </ul>        <br>
+        <h3>Erstellt von: {{ creator.username if creator else "Unbekannter Benutzer" }}</h3>
+    </div>
+</div>
+</body>

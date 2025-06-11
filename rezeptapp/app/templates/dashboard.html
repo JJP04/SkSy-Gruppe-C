@@ -15,35 +15,27 @@
         <a href="/login" class="linkbutton dashboard">Anmelden</a>
         {% endif %}
     </header>
-
-    <h3>Rezepte der Woche</h3>
-    {% if current_user.is_authenticated %}
-    <div class="container-rezepte">
-        {% for rezept in rezepte %}
-        <div class="cardRezepte">
-            <div class="card-img">
-                <img src="{{ url_for('static', filename=rezept.image_path) }}"/>
-            </div>
-            <div class="card-text">{{rezept.title}}</div>
-        </div>
-        {% endfor %}
+    <h3>Alle Rezepte:</h3>
+   <div class="container-rezepte">
+    {% for rezept in rezepte %}
+<!-- In your templates: -->
+        <a class="recipe-details" href="{{ url_for('dashboard.recipe_details', id=rezept.id) }}">
+    <div class="card-rezept">
+        <img class="card-image" src="{{ url_for('static', filename=rezept.image_path) }}" alt="{{ rezept.title }}">
+        <div class="card-title">{{ rezept.title }}</div>
     </div>
-    <h3>Favoriten</h3>
+       </a>
+    {% endfor %}
+</div>
+
     <div class="rezepticon">
-        <!--Hier der Favoriten Inhalt oder so -->
     </div>
 
     <footer class="footer dashboard">
         <a href="/dashboard" class="linkbutton dashboard">Home</a>
         <a href="/recipe/create" class="linkbutton hinzufügen">+</a>
-        <a href="/profil" class="linkbutton dashboard">Mein Profil</a>
+        <a href="/profile" class="linkbutton dashboard">Mein Profil</a>
     </footer>
-
-    {% else %}
-    <footer class="footer dashboard">
-
-    </footer>
-    {% endif %}
 </div>
 </body>
 

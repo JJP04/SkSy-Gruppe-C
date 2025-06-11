@@ -1,67 +1,52 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Mein Profil</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 <div class="container">
+<header class="header dashboard">
+    <h1 class="">{{ user.username }}</h1>
+    <a href="{{ url_for('dashboard.profil_bearbeiten') }}" class="linkbutton dashboard">Profil bearbeiten</a>
 
-    <!-- ---------- Header ---------- -->
-    <header class="header dashboard">
-        <h1>Rezeptwelt.de</h1>
-        {% if current_user.is_authenticated %}
-            <a href="/recipe" class="linkbutton dashboard">Suchen</a>
-        {% else %}
-            <a href="/login" class="linkbutton dashboard">Anmelden</a>
-        {% endif %}
-    </header>
+</header>
 
-    <h3>Mein Profil</h3>
-
-
-
-
-
-    <!-- ---------- Benutzer­infos ---------- -->
-    <p><strong>Benutzername:</strong> {{ user.username }}</p>
-    <p><strong>E-Mail:</strong> {{ user.email }}</p>
-
-    <!-- ---------- Eigene Rezepte ---------- -->
-    <h4>Meine Rezepte</h4>
-    {% if user_recipes %}
-        <div class="container-rezepte">
-            {% for recipe in user_recipes %}
-                <div class="cardRezepte">
-                    <img src="{{ url_for('static', filename=recipe.image_path) }}" alt="Bild für {{ recipe.title }}" class="card-img">
-                    <div class="card-text">
-                        <h5>{{ recipe.title }}</h5>
-                        {% if recipe.visibility == 'private' %}
-                            <span class="private-tag">Privat</span>
-                        {% endif %}
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <p>Du hast noch keine Rezepte erstellt.</p>
-    {% endif %}
-
-
-    <form action="{{ url_for('dashboard.profil_loeschen') }}" method="POST" onsubmit="return confirm('Willst du dein Profil wirklich löschen?')">
-        <button type="submit" class="danger">Profil löschen</button>
-    </form>
-
-    <a href="{{ url_for('dashboard.profil_bearbeiten') }}" class="linkbutton">Profil bearbeiten</a>
-
-    <!-- ---------- Footer ---------- -->
-    <footer class="footer dashboard">
+    <h3>ToDo: Steckbrief, Profilbild</h3>
+    <div style="display: flex; gap: 1rem; justify-content: center;">
+    <div style="text-align: center; min-width: 80px;">
+        <h3>Beiträge</h3>
+        <h3><h3>{{ anzahl_rezepte }}</h3>
+</h3>
+    </div>
+    <div style="text-align: center; min-width: 80px;">
+        <h3>Follower</h3>
+        <h3>XX</h3>
+    </div>
+    <div style="text-align: center; min-width: 80px;">
+        <h3>Gefolgt</h3>
+        <h3>XX</h3>
+    </div>
+</div>
+ <h2>Meine Rezepte</h2>
+ <div class="container-rezepte">
+    {% for rezept in rezepte %}
+             <a class="recipe-details" href="{{ url_for('dashboard.recipe_details', id=rezept.id) }}">
+    <div class="card-rezept">
+        <img class="card-image" src="{{ url_for('static', filename=rezept.image_path) }}" alt="{{ rezept.title }}">
+        <div class="card-title">{{ rezept.title }}</div>
+    </div>
+             </a>
+    {% endfor %}
+</div>
+<footer class="footer dashboard">
         <a href="/dashboard" class="linkbutton dashboard">Home</a>
         <a href="/recipe/create" class="linkbutton hinzufügen">+</a>
-        <a href="/profil" class="linkbutton dashboard">Mein Profil</a>
+        <a href="/profile" class="linkbutton dashboard">Mein Profil</a>
     </footer>
 </div>
 </body>
 </html>
+
