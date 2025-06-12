@@ -7,29 +7,54 @@
 
 <body>
 <div class="container">
+    {% if current_user.is_authenticated %}
     <header class="header dashboard">
         <h1>Rezeptwelt.de</h1>
-        {% if current_user.is_authenticated %}
-        <a href="/recipe" class="linkbutton dashboard">Suchen</a>
-        {% else %}
-        <a href="/login" class="linkbutton dashboard">Anmelden</a>
-        {% endif %}
+        <form method="get" action="{{ url_for('dashboard.search') }}" class="search-form">
+            <input type="text" name="query" placeholder="Rezept suchen..." value="{{ query or '' }}" required>
+            {% if query %}
+            <a href="{{ url_for('dashboard.search') }}" title="Suche löschen" class="search-clear">×</a>
+            {% endif %}
+        </form>
     </header>
-    <h3>Alle Rezepte:</h3>
-   <div class="container-rezepte">
-    {% for rezept in rezepte %}
-<!-- In your templates: -->
-        <a class="recipe-details" href="{{ url_for('dashboard.recipe_details', id=rezept.id) }}">
-    <div class="card-rezept">
-        <img class="card-image" src="{{ url_for('static', filename=rezept.image_path) }}" alt="{{ rezept.title }}">
-        <div class="card-title">{{ rezept.title }}</div>
-    </div>
-       </a>
-    {% endfor %}
-</div>
 
-    <div class="rezepticon">
+
+    <h3>Alle Rezepte:</h3>
+    <div class="container-rezepte">
+        <!-- Display if search -->
+        {% if query %}
+        {% if rezepte %}
+        {% for rezept in rezepte %}
+        <a class="recipe-details" href="{{ url_for('dashboard.recipe_details', id=rezept.id) }}">
+            <div class="card-rezept">
+                <img class="card-image" src="{{ url_for('static', filename=rezept.image_path) }}"
+                     alt="{{ rezept.title }}">
+                <div class="card-title">{{ rezept.title }}</div>
+            </div>
+        </a>
+        {% endfor %}
+        {% else %}
+        <p>Keine Rezepte gefunden.</p>
+        {% endif %}
+
+        <!-- Display if no search -->
+        {% else %}
+        {% for rezept in rezepte %}
+        <a class="recipe-details" href="{{ url_for('dashboard.recipe_details', id=rezept.id) }}">
+            <div class="card-rezept">
+                <img class="card-image" src="{{ url_for('static', filename=rezept.image_path) }}"
+                     alt="{{ rezept.title }}">
+                <div class="card-title">{{ rezept.title }}</div>
+            </div>
+        </a>
+        {% endfor %}
+        {% endif %}
     </div>
+
+    <!-- If not authenticated -->
+    {% else %}
+    <a href="/login" class="linkbutton dashboard">Anmelden</a>
+    {% endif %}
 
     <footer class="footer dashboard">
         <a href="/dashboard" class="linkbutton dashboard">Home</a>

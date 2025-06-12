@@ -245,6 +245,9 @@ hr {
     color: #00008B;
 }
 
+
+
+
 /*--------------------------------FLASHES--------------------------------*/
 .flashes {
     list-style-type: none;
@@ -323,6 +326,7 @@ hr {
     font-size: 0.9rem;
     color: #666;
 }
+
 .recipe-ingredients.checklist {
     list-style: none;
     padding: 0;
@@ -344,7 +348,7 @@ hr {
     cursor: pointer;
     user-select: none;
     transition: background-color 0.2s ease, color 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .recipe-ingredients.checklist li.checked {
