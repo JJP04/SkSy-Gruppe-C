@@ -8,6 +8,8 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(64), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
 
+
+
     # Neue Felder für Sicherheitsfragen + gehashte Antworten
     question1 = db.Column(db.String(128))
     answer1_hash = db.Column(db.String(128))

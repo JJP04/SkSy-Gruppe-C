@@ -23,6 +23,19 @@
         {% endfor %}
     </ul>        <br>
         <h3>Erstellt von: {{ creator.username if creator else "Unbekannter Benutzer" }}</h3>
+
+    {% if current_user.is_authenticated and rezept.user_id == current_user.id %}
+    <form action="{{ url_for('recipe.delete_recipe', recipe_id=rezept.id) }}"
+          method="POST"
+          style="margin-top:1rem;">
+
+        <button type="submit"
+                class="btn btn-danger"
+                onclick="return confirm('Möchtest du dieses Rezept wirklich löschen?');">
+            Rezept löschen
+        </button>
+    </form>
+{% endif %}
     </div>
 </div>
 </body>

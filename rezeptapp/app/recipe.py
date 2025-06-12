@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash, session, current_app
+from flask import Blueprint, render_template, redirect, url_for, request, flash, session, current_app, abort
 from sqlalchemy import func
-from flask_login import current_user
+from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 import os
 
@@ -127,3 +127,18 @@ def save():
     db.session.commit()
 
     return redirect(url_for('dashboard.rezepte'))
+
+@recipe_bp.route('/recipe/<int:recipe_id>/delete', methods=['POST'])
+@login_required
+def delete_recipe(recipe_id):
+    recipe = Recipe.query.get_or_404(recipe_id)
+
+    # Nur der Ersteller darf löschen
+    if recipe.user_id != current_user.id:
+        abort(403)
+
+    RawIngredient.query.filter_by(recipe_id=recipe.id).delete()
+    db.session.delete(recipe)
+    db.session.commit()
+    flash('Rezept gelöscht.', 'success')
+    return redirect(url_for('dashboard.profile'))    # oder dein Dashboard

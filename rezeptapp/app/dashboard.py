@@ -25,21 +25,40 @@ def profile():
     return render_template('profile.html', user=current_user, rezepte=r, anzahl_rezepte=anzahl_rezepte)
 
 
-
-@dashboard_bp.route("/profil/loeschen", methods=["POST"])
+@dashboard_bp.route("/profil/loeschen", methods=['GET', 'POST'])
 @login_required
 def profil_loeschen():
-    user_id = current_user.id
-    logout_user()
+    # GET-Anfrage: Bestätigungsseite anzeigen
+    if request.method == 'GET':
+        recipe_count = Recipe.query.filter_by(user_id=current_user.id).count()
+        return render_template('profil_loeschen_bestaetigung.html',
+                               recipe_count=recipe_count)
 
-    user = User.query.get(user_id)
-    if user:
-        db.session.delete(user)
-        db.session.commit()
+    # POST-Anfrage: Löschvorgang durchführen
+    if request.method == 'POST':
+        user_id = current_user.id
+        delete_recipes = request.form.get('delete_recipes') == 'true'
+
+        # 1. Rezepte behandeln
+        if delete_recipes:
+            # Rezepte komplett löschen
+            Recipe.query.filter_by(user_id=user_id).delete()
+        else:
+            # Rezepte anonymisieren
+            Recipe.query.filter_by(user_id=user_id).update({
+                'user_id': None,
+                'author_deleted': True
+            })
+
+        # 2. User abmelden und löschen
+        logout_user()
+        user = User.query.get(user_id)
+        if user:
+            db.session.delete(user)
+            db.session.commit()
+
         flash("Dein Profil wurde erfolgreich gelöscht.", "info")
-
-    return redirect(url_for("auth.login"))
-
+        return redirect(url_for("auth.login"))
 
 @dashboard_bp.route('/profil/bearbeiten', methods=['GET', 'POST'])
 @login_required
