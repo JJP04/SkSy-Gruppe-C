@@ -9,6 +9,7 @@ from .extensions import db
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
+
 @dashboard_bp.route('/dashboard')
 def rezepte():
     r = Recipe.query.all()
@@ -76,9 +77,24 @@ def profil_bearbeiten():
 
     return render_template('profil_bearbeiten.html', user=current_user)
 
+
+@dashboard_bp.route('/dashboard/search', methods=['GET'])
+def search():
+    query = request.args.get('query', '')
+    if not query:
+        flash('Bitte gib einen Suchbegriff ein.', 'warning')
+        return redirect(url_for('dashboard.rezepte'))
+
+    rezepte = Recipe.query.filter(Recipe.title.ilike(f'%{query}%')).all()
+    if not rezepte:
+        flash('Keine Rezepte gefunden.', 'info')
+
+    return render_template('dashboard.html', rezepte=rezepte, query=query)
+
+
 @dashboard_bp.route('/recipe/<int:id>')
 def recipe_details(id):
-    rezepte= Recipe.query.all()
+    rezepte = Recipe.query.all()
     rezept = next((r for r in rezepte if r.id == id), None)
     user = User.query.get(rezept.user_id)
     zutaten = RawIngredient.query.filter_by(recipe_id=id).all()

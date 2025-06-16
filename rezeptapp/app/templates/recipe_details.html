@@ -12,19 +12,31 @@
         <a href="/dashboard" class="linkbutton dashboard">Zurück</a>
     </header>
 
-    <div class="recipe-details">
-        <img class="card-image" src="{{ url_for('static', filename=rezept.image_path) }}" alt="{{ rezept.title }}">
-        <h2>{{ rezept.title }}</h2>
-        <h3> {{ rezept.description }}</h3>
-<h3>Zutaten:</h3>
-    <ul>
-        {% for zutat in zutaten %}
-            <li>{{ zutat.name }}</li>
-        {% endfor %}
-    </ul>        <br>
-        <h3>Erstellt von: {{ creator.username if creator else "Unbekannter Benutzer" }}</h3>
+    <div class="recipe-details2">
+        <div class="recipe-header">
+            <img class="recipe-image" src="{{ url_for('static', filename=rezept.image_path) }}" alt="{{ rezept.title }}">
+            <h2 class="recipe-title">{{ rezept.title }}</h2>
+            <p class="recipe-description">{{ rezept.description }}</p>
+        </div>
 
-    {% if current_user.is_authenticated and rezept.user_id == current_user.id %}
+        <div class="recipe-section">
+            <h3>Zutaten:</h3>
+<ul class="recipe-ingredients checklist">
+    {% for zutat in zutaten %}
+        <li onclick="toggleCheck(this)">
+            <span class="check-icon">☐</span>
+            <span class="ingredient-text">{{ zutat.name }}</span>
+        </li>
+    {% endfor %}
+</ul>
+
+        </div>
+
+        <div class="recipe-footer">
+            <p><strong>Erstellt von:</strong> {{ creator.username if creator else "Unbekannter Benutzer" }}</p>
+        </div>
+
+        {% if current_user.is_authenticated and rezept.user_id == current_user.id %}
     <form action="{{ url_for('recipe.delete_recipe', recipe_id=rezept.id) }}"
           method="POST"
           style="margin-top:1rem;">

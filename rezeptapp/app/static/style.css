@@ -1,8 +1,8 @@
-/*Grundlayout Hintergrund*/
+/*--------------------------------GRUNDLAYOUT HINTERGRUND--------------------------------*/
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 16px;
+    padding: 2vw;
     background-color: #86989B !important;
 }
 
@@ -10,110 +10,107 @@ body {
     box-sizing: border-box;
 }
 
-/*Grundlegender Container*/
+/*--------------------------------GRUNDLEGENDE CONTAINER--------------------------------*/
 .container {
-    max-width: 400px;
+    width: 100%;
+    max-width: 2000px;
     margin: auto;
     background: white;
-    padding: 15px 24px;
+    padding: 2rem;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-    min-height: 100vh; /*minimal ganzer Bildschirm, bei scrollen Container vergrößern*/
+    min-height: 100%;
     display: flex;
-    flex-direction: column; /* Stapelt Kinder vertikal */
+    flex-direction: column;
 }
 
+
+/*--------------------------------INPUTFELDER--------------------------------*/
 input {
     width: 100%;
-    padding: 12px;
-    font-size: 16px;
+    padding: 1rem;
+    font-size: 1rem;
     border-radius: 6px;
     border: 1.5px solid #9DC183;
-    margin-top: 15px; /* fester Abstand nach oben */
-    margin-bottom: 0; /* unten standardmäßig kein Abstand */
+    margin-top: 1rem;
+    margin-bottom: 0;
 }
 
-/*--------------------------------BUTTONS-----------------------------------*/
-button {
-    width: 200px;
+/*--------------------------------BUTTONS--------------------------------*/
+button,
+a.linkbutton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 200px;
     height: 45px;
-    font-size: 16px;
-    margin: 15px auto;
+    font-size: 1rem;
+    margin: 1rem auto;
     border-radius: 8px;
     border: none;
     background-color: #00008B;
     color: white;
     cursor: pointer;
-    display: block;
+    text-decoration: none;
+    text-align: center;
 }
 
-button:hover {
+button:hover,
+a.linkbutton:hover {
     background-color: #0056b3;
 }
 
-a.linkbutton {
-    width: 200px;
-    height: 45px;
-    font-size: 16px;
-    margin: 15px auto;
-    border-radius: 8px;
-    background-color: #00008B;
-    color: white;
-    cursor: pointer;
-    display: block;
-    text-align: center;
-    align-content: center;
-    line-height: 35px;
-    text-decoration: none;
-}
-
+/* Spezialbutton: kleiner und rechts ausgerichtet */
 a.linkbutton.dashboard {
-    width: 100px;
+    width: auto;
     height: 35px;
-    font-size: 13px;
+    padding: 0 12px;
+    font-size: 0.8rem;
     margin: 0;
+    align-self: flex-end; /* sorgt dafür, dass er im Flex-Container rechts ausgerichtet wird */
 }
 
+/* Runder Button */
 a.linkbutton.hinzufügen {
     width: 45px;
     height: 45px;
     border-radius: 50%;
-    font-size: 20px;
+    font-size: 1.25rem;
+    line-height: 1;
     margin: 0;
-    line-height: 45px;
-}
-a.recipe-details{
-     text-decoration: none;
+    justify-content: center;
+    align-items: center;
 }
 
+a.recipe-details {
+    text-decoration: none;
+}
 
-/*--------------------------------HEADER-----------------------------------*/
+/*--------------------------------HEADER--------------------------------*/
 .header {
     border-bottom: 3px solid #9DC183;
-    padding-bottom: 5px;
+    padding-bottom: 0.5rem;
 }
 
 .header.dashboard {
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Button links, Überschrift rechts */
+    justify-content: space-between;
 }
 
 .header.selection {
-    display: flex; /*horizontale Anordung*/
-    align-items: center; /*richtet Tabs vertikal zentriert aus*/
-    margin-bottom: 6px;
-    font-size: 18px;
-    padding-bottom: 14px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    padding-bottom: 1rem;
 }
 
-
-/*--------------------------------Footer-----------------------------------*/
+/*--------------------------------FOOTER--------------------------------*/
 .footer {
     margin-top: auto;
     border-top: 3px solid #9DC183;
-    padding-top: 5px;
-
+    padding-top: 0.5rem;
 }
 
 .footer.dashboard {
@@ -122,13 +119,13 @@ a.recipe-details{
     justify-content: space-between;
 }
 
-/*--------------------------------ÜBERSCHRIFTEN-----------------------------------*/
+/*--------------------------------ÜBERSCHRIFTEN--------------------------------*/
 h1, h2, h4 {
     margin: 0;
-    font-size: 24px;
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
     font-weight: bold;
     color: #9DC183;
-    padding: 8px 0;
+    padding: 0.5rem 0;
 }
 
 h1 {
@@ -137,21 +134,19 @@ h1 {
 
 h3 {
     font-weight: bold;
-    display: block;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    font-size: 15px;
+    margin: 0.5rem 0;
+    font-size: 1rem;
     color: #00008B;
 }
 
 a.h4 {
-    margin-top: 10px;
-    font-size: 11px;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
     display: inline-block;
 }
 
-/*--------------------------------TRENNELEMENTE-----------------------------------*/
-.divider { /*Horizontaler Strich*/
+/*--------------------------------TRENNELEMENTE--------------------------------*/
+.divider {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
@@ -160,25 +155,25 @@ a.h4 {
     background-color: #9DC183;
 }
 
-hr { /*vertikaler Strich*/
+hr {
     border: none;
     height: 3px;
     background-color: #9DC183;
-    margin-top: 24px;
-    margin-bottom: 10px;
+    margin: 1.5rem 0 0.5rem;
     width: 100%;
 }
 
-/*--------------------------------SEITENELEMENTE-----------------------------------*/
+/*--------------------------------SEITENELEMENTE--------------------------------*/
 .container-rezepte {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
     justify-content: center;
+    padding: 1rem 0;
 }
 
 .card-rezept {
-    width: 350px;
+    max-width: 700px;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -195,10 +190,12 @@ hr { /*vertikaler Strich*/
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-.card-image {
+.card-image,
+.card-img img {
     width: 100%;
-    height: 130px;
+    height: 150px;
     object-fit: cover;
+    display: block;
 }
 
 .card-title {
@@ -208,17 +205,7 @@ hr { /*vertikaler Strich*/
     color: #333;
     text-align: center;
     word-wrap: break-word;
-    white-space: normal;
 }
-
-.card-img img{
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    display: block;
-}
-
-
 
 .card-text {
     position: absolute;
@@ -228,18 +215,14 @@ hr { /*vertikaler Strich*/
     padding: 2px 5px;
     text-align: center;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 0.875rem;
     line-height: 30px;
     color: white;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 10;
 }
 
-
-
-/*--------------------------------STUFF-----------------------------------*/
-
-/*Seiten Überschrift*/
+/*--------------------------------STUFF--------------------------------*/
 .tab {
     white-space: nowrap;
     display: flex;
@@ -249,25 +232,27 @@ hr { /*vertikaler Strich*/
     font-weight: bold;
 }
 
-/*Tab Design*/
 .tab.link {
-    width: 50%;
+    flex: 1;
+    padding: 0.5rem;
     color: #9DC183;
     cursor: pointer;
     text-decoration: none;
+    text-align: center;
 }
 
-/*Ausgewählten Tab hervorheben*/
 .tab.active {
     color: #00008B;
 }
 
 
-/*Flashes - Fehlermeldungen*/
+
+
+/*--------------------------------FLASHES--------------------------------*/
 .flashes {
     list-style-type: none;
     padding: 0;
-    margin-bottom: 16px;
+    margin-bottom: 1rem;
     color: red;
 }
 
@@ -279,31 +264,105 @@ hr { /*vertikaler Strich*/
     color: green;
 }
 
-/*HTML ELEMENTE
+/*--------------------------------RESPONSIVE MEDIA QUERIES--------------------------------*/
+@media screen and (max-width: 480px) {
+    .container {
+        padding: 1rem;
+    }
 
-Element     |Beschreibung
-div	        |Block-Container(generisch)
-span	    |Inline-Container (generisch)
-p	        |Absatz
-h1–h6	    |Überschriften (von groß bis klein)
-a	        |Link
-ul	        |Ungeordnete Liste
-ol	        |Geordnete Liste
-li	        |Listenelement
-table	    |Tabelle
-tr	        |Tabellenzeile
-td	        |Tabellenzelle
-th	        |Tabellenüberschrift
-form	    |Formular
-input	    |Eingabefeld
-button	    |Knopf
-img	        |Bild
-header	    |Kopfbereich
-footer	    |Fußbereich
-nav	        |Navigation
-section	    |Abschnitt
-article	    |Artikel
-aside	    |Seitenleiste, Zusatzinfo
-main	    |Hauptinhalt
-label	    |Label für Formularfelder
-*/
+    button, a.linkbutton {
+        width: 100%;
+    }
+
+    h1, h2, h4 {
+        font-size: 1.25rem;
+    }
+}
+
+.recipe-details2 {
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+    margin-top: 2rem;
+}
+
+
+.recipe-image {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.recipe-title {
+    font-size: 2rem;
+    color: #00008B;
+    margin: 0.5rem 0;
+    text-align: center;
+}
+
+.recipe-description {
+    font-size: 1rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.recipe-section h3 {
+    margin-bottom: 0.5rem;
+}
+
+.recipe-ingredients {
+    list-style: disc inside;
+    padding-left: 1rem;
+    margin-bottom: 2rem;
+}
+
+.recipe-footer {
+    text-align: right;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.recipe-ingredients.checklist {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.recipe-ingredients.checklist li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background-color: #f4f4f4;
+    border-radius: 6px;
+    font-size: 1rem;
+    color: #333;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.recipe-ingredients.checklist li.checked {
+    background-color: #d7f5dc;
+    color: #6fa66b;
+}
+
+.recipe-ingredients.checklist .check-icon {
+    font-size: 1.2rem;
+    color: #aaa;
+    transition: color 0.2s;
+}
+
+.recipe-ingredients.checklist li.checked .check-icon {
+    color: #4CAF50;
+    content: "☑";
+}
