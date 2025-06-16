@@ -50,4 +50,11 @@
 {% endif %}
     </div>
 </div>
+<script>
+  function toggleCheck(item) {
+    item.classList.toggle('checked');
+    const icon = item.querySelector('.check-icon');
+    icon.textContent = item.classList.contains('checked') ? "☑" : "☐";
+  }
+</script>
 </body>
