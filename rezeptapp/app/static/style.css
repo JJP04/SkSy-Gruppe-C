@@ -13,13 +13,12 @@ body {
 /*--------------------------------GRUNDLEGENDE CONTAINER--------------------------------*/
 .container {
     width: 100%;
-    max-width: 2000px; /* vorher 800px */
+    max-width: 2000px;
     margin: auto;
     background: white;
     padding: 2rem;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-    min-height: 100vh;
+    min-height: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -174,6 +173,7 @@ hr {
 }
 
 .card-rezept {
+    max-width: 700px;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
