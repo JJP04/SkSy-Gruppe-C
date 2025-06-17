@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session
 from sqlalchemy import func
-from flask_login import login_user
+from flask_login import login_user, logout_user, login_required
 from .models import User
 from .extensions import db
 import random
@@ -170,3 +170,11 @@ def passwortneu():
         flash('Antwort war falsch', 'error')
         question = getattr(user, f'question{index}')
         return render_template('login.html', active_tab='passwortneu', question=question)
+
+
+@auth_bp.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Du wurdest erfolgreich ausgeloggt.', 'info')
+    return redirect(url_for('auth.login'))

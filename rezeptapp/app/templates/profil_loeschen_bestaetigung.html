@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Profil löschen bestätigen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Profil löschen</h1>
+        <p>Du hast noch Rezepte veröffentlicht.</p>
+        <p>Möchtest du diese Rezepte ebenfalls löschen oder sollen sie erhalten bleiben?</p>
+
+        <form method="POST" class="form-loeschen">
+            <button type="submit" name="delete_recipes" value="true" class="button-danger">Ja, alle Rezepte löschen</button>
+            <button type="submit" name="delete_recipes" value="false" class="button-secondary">Nein, Rezepte behalten</button>
+        </form>
+    </div>
+</body>
+</html>

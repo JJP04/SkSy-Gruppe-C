@@ -44,7 +44,7 @@
 <footer class="footer dashboard">
         <a href="/dashboard" class="linkbutton dashboard">Home</a>
         <a href="/recipe/create" class="linkbutton hinzufügen">+</a>
-        <a href="/profile" class="linkbutton dashboard">Mein Profil</a>
+        <a href="{{ url_for('auth.logout') }}" class="linkbutton dashboard">Ausloggen</a>
     </footer>
 </div>
 </body>

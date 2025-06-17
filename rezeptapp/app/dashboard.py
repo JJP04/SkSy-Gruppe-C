@@ -29,35 +29,49 @@ def profile():
 @dashboard_bp.route("/profil/loeschen", methods=['GET', 'POST'])
 @login_required
 def profil_loeschen():
-    # GET-Anfrage: Bestätigungsseite anzeigen
-    if request.method == 'GET':
-        recipe_count = Recipe.query.filter_by(user_id=current_user.id).count()
-        return render_template('profil_loeschen_bestaetigung.html',
-                               recipe_count=recipe_count)
+    user_id = current_user.id
 
-    # POST-Anfrage: Löschvorgang durchführen
+    if request.method == 'GET':
+        rezeptanzahl = Recipe.query.filter_by(user_id=user_id).count()
+        print(">> Rezeptanzahl:", rezeptanzahl)
+
+        if rezeptanzahl == 0:
+            # Keine Rezepte → direkt löschen
+
+            logout_user()
+            user = User.query.get(user_id)
+            db.session.delete(user)
+            db.session.commit()
+            flash("Dein Profil wurde erfolgreich gelöscht.", "info")
+            return redirect(url_for("auth.login"))
+        else:
+            # Rezepte vorhanden → Bestätigung anzeigen
+
+
+
+
+
+
+            return render_template(
+                'profil_loeschen_bestaetigung.html',
+                rezeptanzahl=rezeptanzahl  # Wichtig: Anzahl übergeben!
+            )
+
     if request.method == 'POST':
-        user_id = current_user.id
         delete_recipes = request.form.get('delete_recipes') == 'true'
 
-        # 1. Rezepte behandeln
         if delete_recipes:
-            # Rezepte komplett löschen
             Recipe.query.filter_by(user_id=user_id).delete()
         else:
-            # Rezepte anonymisieren
             Recipe.query.filter_by(user_id=user_id).update({
-                'user_id': None,
+                'user_id': 9999,
                 'author_deleted': True
             })
 
-        # 2. User abmelden und löschen
         logout_user()
         user = User.query.get(user_id)
-        if user:
-            db.session.delete(user)
-            db.session.commit()
-
+        db.session.delete(user)
+        db.session.commit()
         flash("Dein Profil wurde erfolgreich gelöscht.", "info")
         return redirect(url_for("auth.login"))
 
