@@ -47,7 +47,7 @@
         <h1>Passwort zurücksetzen</h1>
     </div>
     <form method="post" action="{{ url_for('auth.passwortneu') }}">
-        <h3>{{ questions }}</h3>
+        <h3>{{ question }}</h3>
         <input type="text" name="answer" placeholder="Antwort" required>
         <h3>Neues Passwort:</h3>
         <input type="password" name="new_password" placeholder="Neues Passwort" required>

@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user, logout_user
+from sqlalchemy import or_
 
 from .models import User, Recipe, Ingredient, RecipeIngredient, RawIngredient
 from .extensions import db
@@ -12,7 +13,15 @@ dashboard_bp = Blueprint('dashboard', __name__)
 
 @dashboard_bp.route('/dashboard')
 def rezepte():
-    r = Recipe.query.all()
+    #r = Recipe.query.all()
+
+    r = Recipe.query.filter(
+        or_(
+            Recipe.visibility == "public",
+            (Recipe.visibility == "private") & (Recipe.user_id == current_user.id)
+        )
+    ).all()
+
     return render_template("dashboard.html", rezepte=r)
 
 
