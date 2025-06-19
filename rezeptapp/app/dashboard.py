@@ -70,8 +70,32 @@ def profil_loeschen():
         delete_recipes = request.form.get('delete_recipes') == 'true'
 
         if delete_recipes:
+            recipes = Recipe.query.filter(Recipe.user_id == user_id).all()
+            # Zuerst alle zugehörigen RawIngredients & RecipeIngredients löschen
+            for recipe in recipes:
+                RawIngredient.query.filter_by(recipe_id=recipe.id).delete()
+                RecipeIngredient.query.filter_by(recipe_id=recipe.id).delete()
+
             Recipe.query.filter_by(user_id=user_id).delete()
         else:
+            #private löschen, da diese sonst in der DB nutzlos rumliegen
+            recipes = Recipe.query.filter(
+                Recipe.user_id == user_id,
+                Recipe.visibility == "private"
+            ).all()
+
+            # Zuerst alle zugehörigen RawIngredients löschen
+            for recipe in recipes:
+                RawIngredient.query.filter_by(recipe_id=recipe.id).delete()
+                RecipeIngredient.query.filter_by(recipe_id=recipe.id).delete()
+
+            # Dann die Rezepte löschen
+            Recipe.query.filter(
+                Recipe.user_id == user_id,
+                Recipe.visibility == "private"
+            ).delete()
+
+            #öffentliche bleiben bestehen
             Recipe.query.filter_by(user_id=user_id).update({
                 'user_id': 9999,
                 'author_deleted': True
@@ -120,7 +144,9 @@ def recipe_details(id):
     rezepte = Recipe.query.all()
     rezept = next((r for r in rezepte if r.id == id), None)
     user = User.query.get(rezept.user_id)
-    zutaten = RawIngredient.query.filter_by(recipe_id=id).all()
-
+    raw_zutaten = RawIngredient.query.filter_by(recipe_id=id).all()
+    verified_zutaten = [ri.ingredient for ri in rezept.recipe_ingredients]
+    # Case-insensitive deduplication
+    zutaten = list({z.name.lower(): z for z in raw_zutaten + verified_zutaten}.values())
     print(zutaten)
     return render_template('recipe_details.html', rezept=rezept, creator=user, zutaten=zutaten)

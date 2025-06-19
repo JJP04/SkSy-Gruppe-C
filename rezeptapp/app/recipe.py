@@ -138,6 +138,7 @@ def delete_recipe(recipe_id):
         abort(403)
 
     RawIngredient.query.filter_by(recipe_id=recipe.id).delete()
+    RecipeIngredient.query.filter_by(recipe_id=recipe.id).delete()
     db.session.delete(recipe)
     db.session.commit()
     flash('Rezept gelöscht.', 'success')

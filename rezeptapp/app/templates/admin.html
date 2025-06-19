@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <title>Adminbereich</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    .user-card {
+      border: 1px solid #ccc;
+      padding: 12px;
+      margin-bottom: 16px;
+      border-radius: 6px;
+    }
+    .user-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .recipe-list {
+      margin-top: 10px;
+      padding-left: 20px;
+    }
+    form.inline {
+      display: inline;
+    }
+    button {
+      background-color: #d9534f;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #c9302c;
+    }
+  </style>
+</head>
+<body>
+  <h1>Adminbereich</h1>
+
+  {% for user in users %}
+    <div class="user-card">
+      <div class="user-header">
+        <strong>{{ user.username }}</strong>
+        <form method="POST" action="{{ url_for('admin.delete_user', user_id=user.id) }}" class="inline">
+          <button type="submit" onclick="return confirm('Benutzer wirklich löschen?')">Benutzer löschen</button>
+        </form>
+      </div>
+
+      {% if user.recipes %}
+        <ul class="recipe-list">
+          {% for recipe in user.recipes %}
+            <li>
+              {{ recipe.title }}
+              <form method="POST" action="{{ url_for('admin.delete_recipe', recipe_id=recipe.id) }}" class="inline">
+                <button type="submit" onclick="return confirm('Rezept wirklich löschen?')">✖</button>
+              </form>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p><em>Keine Rezepte vorhanden</em></p>
+      {% endif %}
+    </div>
+  {% endfor %}
+
+<!-- Fehlermeldungen -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for category, message in messages %}
+        <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+
+</body>
+</html>
+
+

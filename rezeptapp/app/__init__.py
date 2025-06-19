@@ -40,11 +40,13 @@ def create_app():
     from .auth import auth_bp
     from .dashboard import dashboard_bp
     from .recipe import recipe_bp
+    from .admin import admin_bp
 
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(recipe_bp)
+    app.register_blueprint(admin_bp)
 
     with app.app_context():
       #  Recipe.__table__.drop(db.engine, checkfirst=True)  #Tabelle löschen
