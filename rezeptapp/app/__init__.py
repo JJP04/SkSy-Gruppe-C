@@ -41,9 +41,8 @@ def create_app():
     from .dashboard import dashboard_bp
     from .recipe import recipe_bp
 
-
-    app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
+    app.register_blueprint(auth_bp)
     app.register_blueprint(recipe_bp)
 
     with app.app_context():

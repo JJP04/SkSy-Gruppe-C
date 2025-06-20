@@ -7,6 +7,7 @@
 
 <body>
 <div class="container">
+    <!--Wenn Angemeldet-->
     {% if current_user.is_authenticated %}
     <header class="header dashboard">
         <h1>Rezeptwelt.de</h1>
@@ -50,17 +51,22 @@
         {% endfor %}
         {% endif %}
     </div>
-
-    <!-- If not authenticated -->
-    {% else %}
-    <a href="/login" class="linkbutton dashboard">Anmelden</a>
-    {% endif %}
-
     <footer class="footer dashboard">
-        <a href="/dashboard" class="linkbutton dashboard">Home</a>
+        <a href="/" class="linkbutton dashboard">Home</a>
         <a href="/recipe/create" class="linkbutton hinzufügen">+</a>
         <a href="/profile" class="linkbutton dashboard">Mein Profil</a>
     </footer>
+
+    <!-- If not authenticated -->
+    {% else %}
+    <header class="header dashboard">
+        <h1>Rezeptwelt.de</h1>
+        <a href="/login" class="linkbutton dashboard">Anmelden</a>
+    </header>
+
+    {% endif %}
+
+
 </div>
 </body>
 

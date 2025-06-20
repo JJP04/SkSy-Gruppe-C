@@ -10,7 +10,7 @@ from .extensions import db
 dashboard_bp = Blueprint('dashboard', __name__)
 
 
-@dashboard_bp.route('/dashboard')
+@dashboard_bp.route('/')
 def rezepte():
     r = Recipe.query.all()
     return render_template("dashboard.html", rezepte=r)

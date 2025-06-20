@@ -130,6 +130,7 @@ h1, h2, h4 {
 
 h1 {
     text-align: center;
+    text-decoration: none;
 }
 
 h3 {
@@ -243,6 +244,41 @@ hr {
 
 .tab.active {
     color: #00008B;
+}
+
+.search-form {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 200px;
+    margin-left: auto;
+    height: 48px;
+}
+
+.search-form input[type="text"] {
+    width: 100%;
+    padding-right: 2.2rem;
+    height: 100%; /* gleiche Höhe wie das Form */
+    box-sizing: border-box;
+    margin-top: 0;
+}
+
+.search-clear {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+    color: #aaa;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    height: 1.2em;
+    line-height: 1.2em;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
 }
 
 
