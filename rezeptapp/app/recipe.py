@@ -128,6 +128,7 @@ def save():
 
     return redirect(url_for('dashboard.rezepte'))
 
+
 @recipe_bp.route('/recipe/<int:recipe_id>/delete', methods=['POST'])
 @login_required
 def delete_recipe(recipe_id):
@@ -142,4 +143,4 @@ def delete_recipe(recipe_id):
     db.session.delete(recipe)
     db.session.commit()
     flash('Rezept gelöscht.', 'success')
-    return redirect(url_for('dashboard.profile'))    # oder dein Dashboard
+    return redirect(url_for('dashboard.profile'))  # oder dein Dashboard

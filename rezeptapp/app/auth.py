@@ -176,4 +176,4 @@ def passwortneu():
 def logout():
     logout_user()
     flash('Du wurdest erfolgreich ausgeloggt.', 'info')
-    return redirect(url_for('auth.login'))
+    return redirect(url_for('dashboard.rezepte'))

@@ -48,6 +48,6 @@ def create_app():
     app.register_blueprint(admin_bp)
 
     with app.app_context():
-      #  Recipe.__table__.drop(db.engine, checkfirst=True)  #Tabelle löschen
+        #Recipe.__table__.drop(db.engine, checkfirst=True)  #Tabelle löschen
         db.create_all()
     return app

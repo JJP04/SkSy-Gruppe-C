@@ -15,12 +15,15 @@ dashboard_bp = Blueprint('dashboard', __name__)
 def rezepte():
     #r = Recipe.query.all()
 
-    r = Recipe.query.filter(
-        or_(
-            Recipe.visibility == "public",
-            (Recipe.visibility == "private") & (Recipe.user_id == current_user.id)
-        )
-    ).all()
+    if current_user.is_authenticated:
+        r = Recipe.query.filter(
+            or_(
+                Recipe.visibility == "public",
+                (Recipe.visibility == "private") & (Recipe.user_id == current_user.id)
+            )
+        ).all()
+    else:
+        r = Recipe.query.filter(Recipe.visibility == "public").all()
 
     return render_template("dashboard.html", rezepte=r)
 
