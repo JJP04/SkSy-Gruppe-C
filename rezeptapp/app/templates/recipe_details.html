@@ -36,6 +36,36 @@
             <p><strong>Erstellt von:</strong> {{ creator.username if creator else "Unbekannter Benutzer" }}</p>
         </div>
 
+  <!-- Sichtbarkeit anzeigen -->
+<p><strong>Sichtbarkeit:</strong>
+   {{ 'Öffentlich' if rezept.visibility == 'public' else 'Privat' }}
+</p>
+
+{% if current_user.is_authenticated and rezept.user_id == current_user.id %}
+    <form action="{{ url_for('dashboard.recipe_details', id=rezept.id) }}"
+          method="POST"
+          style="margin-top:1rem;">
+
+        <input type="hidden" name="toggle_visibility" value="1">
+
+        {% if rezept.visibility == 'public' %}
+            <button type="submit"
+                    class="btn btn-warning"
+                    onclick="return confirm('Möchtest du dieses Rezept privat schalten?');">
+                Als privat markieren
+            </button>
+        {% else %}
+            <button type="submit"
+                    class="btn btn-success"
+                    onclick="return confirm('Möchtest du dieses Rezept öffentlich schalten?');">
+                Als öffentlich markieren
+            </button>
+        {% endif %}
+    </form>
+{% endif %}
+
+
+
         {% if current_user.is_authenticated and rezept.user_id == current_user.id %}
     <form action="{{ url_for('recipe.delete_recipe', recipe_id=rezept.id) }}"
           method="POST"

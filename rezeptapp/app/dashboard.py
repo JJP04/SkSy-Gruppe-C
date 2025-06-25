@@ -142,14 +142,38 @@ def search():
     return render_template('dashboard.html', rezepte=rezepte, query=query)
 
 
-@dashboard_bp.route('/recipe/<int:id>')
+
+
+
+
+@dashboard_bp.route('/recipe/<int:id>', methods=['GET', 'POST'])
+@login_required       # falls Detail-Seite sowieso Login braucht; sonst nur für POST prüfen
 def recipe_details(id):
-    rezepte = Recipe.query.all()
-    rezept = next((r for r in rezepte if r.id == id), None)
+    rezept = Recipe.query.get_or_404(id)
+
+    # ---------- POST: Sichtbarkeit umschalten ----------
+    if request.method == 'POST' and request.form.get('toggle_visibility'):
+        if rezept.user_id != current_user.id:
+            abort(403)
+
+        rezept.visibility = 'private' if rezept.visibility == 'public' else 'public'
+        db.session.commit()
+        flash(f"Rezept ist jetzt {'privat' if rezept.visibility == 'private' else 'öffentlich'}.", "success")
+        return redirect(url_for('dashboard.recipe_details', id=id))
+
+    # ---------- GET: Seite anzeigen ----------
+    # Zugriffsschutz bei privaten Rezepten
+    if rezept.visibility == 'private' and rezept.user_id != current_user.id:
+        abort(403)
+
     user = User.query.get(rezept.user_id)
     raw_zutaten = RawIngredient.query.filter_by(recipe_id=id).all()
     verified_zutaten = [ri.ingredient for ri in rezept.recipe_ingredients]
-    # Case-insensitive deduplication
     zutaten = list({z.name.lower(): z for z in raw_zutaten + verified_zutaten}.values())
-    print(zutaten)
-    return render_template('recipe_details.html', rezept=rezept, creator=user, zutaten=zutaten)
+
+    return render_template(
+        'recipe_details.html',
+        rezept=rezept,
+        creator=user,
+        zutaten=zutaten
+    )
