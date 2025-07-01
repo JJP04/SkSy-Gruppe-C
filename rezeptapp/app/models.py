@@ -8,7 +8,8 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(64), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
 
-
+    steckbrief = db.Column(db.Text)  # neu
+    profilbild = db.Column(db.String(200))  # Dateiname oder URL
 
     # Neue Felder für Sicherheitsfragen + gehashte Antworten
     question1 = db.Column(db.String(128))

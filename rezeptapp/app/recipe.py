@@ -31,16 +31,6 @@ def analyze():
         flash("Alle Felder sind erforderlich.", "error")
         return redirect(url_for('recipe.create'))
 
-    image = request.files.get('imageUpload')
-    image_path = ''
-
-    if image and image.filename.endswith('.jpg'):
-        filename = secure_filename(image.filename)
-        tmp_folder = os.path.join(current_app.root_path, 'static', 'Images')
-        full_path = os.path.join(tmp_folder, filename)
-        image.save(full_path)
-        image_path = f"images/{filename}"
-
     # NER-Modell aus dem Flask App-Context holen
     ner = current_app.ner_pipeline
 
@@ -78,7 +68,15 @@ def save():
     description = request.form.get('description', '').strip()
     visibility = request.form.get('visibility', 'private')
     author = current_user
-    image_path = request.form.get('image_path', '')
+    file = request.files.get("imageUpload")
+    if file and file.filename:
+        try:
+            image_path = save_image(file, subfolder="images")  # ergibt 'images/xyz.jpg'
+        except ValueError as err:
+            flash(str(err), "error")
+            return redirect(url_for('recipe.create'))
+    else:
+        image_path = ""
 
     if not author.is_authenticated:
         flash("Nicht eingeloggt.", "error")
@@ -95,7 +93,7 @@ def save():
         title=title,
         description=description,
         visibility=visibility,
-        user_id=author.id,  # wichtig: das User-FK-Feld
+        user_id=author.id,
         image_path=image_path
     )
     db.session.add(neues_rezept)

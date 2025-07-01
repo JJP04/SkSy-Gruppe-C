@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user, logout_user
 from sqlalchemy import or_
+from app.helpers import save_image
 
 from .models import User, Recipe, Ingredient, RecipeIngredient, RawIngredient
 from .extensions import db
@@ -115,18 +116,30 @@ def profil_loeschen():
 @login_required
 def profil_bearbeiten():
     if request.method == 'POST':
-        neuer_name = request.form.get('username')
-        neue_email = request.form.get('email')
+        print(">>> Steckbrief angekommen:", request.form.get("steckbrief"))
 
-        current_user.username = neuer_name
-        current_user.email = neue_email
+        current_user.username = request.form.get("username", "").strip()
+        current_user.email = request.form.get("email", "").strip()
+        current_user.steckbrief = request.form.get("steckbrief", "").strip()
+
+        file = request.files.get("profilbild")
+        if file and file.filename:
+            try:
+                rel_path = save_image(
+                    file,
+                    subfolder="uploads",  # Profilbilder‑Ordner
+                    old_filename=current_user.profilbild
+                )
+                current_user.profilbild = rel_path
+            except ValueError as err:
+                flash(str(err), "error")
+                return redirect(request.url)
 
         db.session.commit()
-        flash('Profil aktualisiert.', 'success')
-        return redirect(url_for('dashboard.profile'))
+        flash("Profil aktualisiert.", "success")
+        return redirect(url_for("dashboard.profile"))
 
-    return render_template('profil_bearbeiten.html', user=current_user)
-
+    return render_template("profil_bearbeiten.html", user=current_user)
 
 @dashboard_bp.route('/dashboard/search', methods=['GET'])
 def search():
@@ -140,11 +153,6 @@ def search():
         flash('Keine Rezepte gefunden.', 'info')
 
     return render_template('dashboard.html', rezepte=rezepte, query=query)
-
-
-
-
-
 
 @dashboard_bp.route('/recipe/<int:id>', methods=['GET', 'POST'])
 @login_required       # falls Detail-Seite sowieso Login braucht; sonst nur für POST prüfen
