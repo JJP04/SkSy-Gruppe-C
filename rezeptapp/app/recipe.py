@@ -32,8 +32,9 @@ def analyze():
         flash("Alle Felder sind erforderlich.", "error")
         return redirect(url_for('recipe.create'))
 
+    image_path = 'images/default.jpg'  # Standardbild, falls kein Bild hochgeladen wird
     image = request.files.get('imageUpload')
-    image_path = ''
+
 
     if image and image.filename.endswith('.jpg'):
         filename = secure_filename(image.filename)
@@ -80,7 +81,8 @@ def save():
     visibility = request.form.get('visibility', 'private')
     author = current_user
     image_path = request.form.get('image_path', '')
-
+    if not image_path:
+        image_path = 'images/default.jpg'
     if not author.is_authenticated:
         flash("Nicht eingeloggt.", "error")
         return redirect(url_for('auth.login'))
