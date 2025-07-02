@@ -59,10 +59,33 @@
 
     <!-- If not authenticated -->
     {% else %}
-    <header class="header dashboard">
-        <h1>Rezeptwelt.de</h1>
-        <a href="/login" class="linkbutton dashboard">Anmelden</a>
-    </header>
+    <header class="header">
+    <h1>Rezeptwelt.de</h1>
+</header>
+
+<section class="welcome-section">
+    <h2 class="welcome-headline">Deine kulinarische Schatztruhe</h2>
+    <p class="welcome-slogan">Entdecke kreative Rezepte, speichere deine Favoriten und lass dich täglich neu inspirieren – ganz ohne Anmeldung!</p>
+    <a href="/login" class="linkbutton">Jetzt anmelden</a>
+</section>
+
+<section class="public-recipes">
+    <h3>Ein kleiner Vorgeschmack</h3>
+    <div class="container-rezepte">
+        {% for rezept in rezepte %}
+        <a class="recipe-details" href="{{ url_for('dashboard.recipe_details', id=rezept.id) }}">
+            <div class="card-rezept">
+                <img class="card-image" src="{{ url_for('static', filename=rezept.image_path) }}" alt="{{ rezept.title }}">
+                <div class="card-title">{{ rezept.title }}</div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+<footer class="footer">
+    <p style="text-align: center;">🍲 Über 10.000 kreative Ideen warten auf dich. Werde Teil der Rezeptwelt-Community!</p>
+</footer>
 
     {% endif %}
 

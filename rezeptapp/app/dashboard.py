@@ -10,22 +10,27 @@ from .extensions import db
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
-
 @dashboard_bp.route('/')
 def rezepte():
-    #r = Recipe.query.all()
+    if not current_user.is_authenticated:
+        return redirect(url_for('dashboard.welcome'))
 
-    if current_user.is_authenticated:
-        r = Recipe.query.filter(
-            or_(
-                Recipe.visibility == "public",
-                (Recipe.visibility == "private") & (Recipe.user_id == current_user.id)
-            )
-        ).all()
-    else:
-        r = Recipe.query.filter(Recipe.visibility == "public").all()
-
+    r = Recipe.query.filter(
+        or_(
+            Recipe.visibility == "public",
+            (Recipe.visibility == "private") & (Recipe.user_id == current_user.id)
+        )
+    ).all()
     return render_template("dashboard.html", rezepte=r)
+
+@dashboard_bp.route('/welcome')
+def welcome():
+    if current_user.is_authenticated:
+        return redirect(url_for("dashboard.rezepte"))
+    rezepte = Recipe.query.filter_by(visibility="public") \
+                          .order_by(db.func.random()) \
+                          .limit(6).all()
+    return render_template("dashboard.html", rezepte=rezepte)
 
 
 @dashboard_bp.route('/profile')
@@ -179,3 +184,5 @@ def add_comment(recipe_id):
     db.session.commit()
     flash("Kommentar hinzugefügt.", "success")
     return redirect(url_for('dashboard.recipe_details', id=recipe_id))
+
+
