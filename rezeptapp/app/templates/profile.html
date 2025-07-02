@@ -9,27 +9,41 @@
 <body>
 <div class="container">
 <header class="header dashboard">
-    <h1 class="">{{ user.username }}</h1>
+    <h1 class="">Mein Profil</h1>
     <a href="{{ url_for('dashboard.profil_bearbeiten') }}" class="linkbutton dashboard">Profil bearbeiten</a>
-
 </header>
 
-    <h3>ToDo: Steckbrief, Profilbild</h3>
-    <div style="display: flex; gap: 1rem; justify-content: center;">
-    <div style="text-align: center; min-width: 80px;">
-        <h3>Beiträge</h3>
-        <h3><h3>{{ anzahl_rezepte }}</h3>
-</h3>
-    </div>
-    <div style="text-align: center; min-width: 80px;">
-        <h3>Follower</h3>
-        <h3>XX</h3>
-    </div>
-    <div style="text-align: center; min-width: 80px;">
-        <h3>Gefolgt</h3>
-        <h3>XX</h3>
-    </div>
+    <div style="display:flex; gap:2rem; align-items:flex-start; flex-wrap:wrap; margin-top: 2rem">
+
+  {# ───── Profilbild ───── #}
+  <div>
+    {% if user.profilbild %}
+      <img src="{{ url_for('static', filename=user.profilbild) }}"
+           alt="Profilbild"
+           style="max-width:200px; border-radius:8px;">
+    {% else %}
+      <img src="{{ url_for('static', filename='images/default-avatar.png') }}"
+           alt="Profilbild"
+           style="max-width:200px; border-radius:8px; opacity:0.5;">
+    {% endif %}
+  </div>
+
+  {# ───── Basis‑Infos ───── #}
+  <div>
+    <h1>{{ user.username }}</h1>
+
+    {# Steckbrief nur anzeigen, wenn vorhanden #}
+    {% if user.steckbrief %}
+      <p style="white-space:pre-wrap;">{{ user.steckbrief }}</p>
+    {% endif %}
+      <p>Beiträge: {{ anzahl_rezepte }}</p>
+
+  </div>
+        {# ───── Zahlen- Infos ───── #}
+
 </div>
+
+
  <h2>Meine Rezepte</h2>
  <div class="container-rezepte">
     {% for rezept in rezepte %}

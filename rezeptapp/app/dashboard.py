@@ -1,8 +1,9 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user, logout_user
 from sqlalchemy import or_
-from sqlalchemy.orm import joinedload
-from .models import User, Recipe, Ingredient, RecipeIngredient, RawIngredient, Comment
+from app.helpers import save_image
+
+from .models import User, Recipe, Ingredient, RecipeIngredient, RawIngredient
 from .extensions import db
 
 # für die profilansicht
@@ -10,27 +11,22 @@ from .extensions import db
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
+
 @dashboard_bp.route('/')
 def rezepte():
-    if not current_user.is_authenticated:
-        return redirect(url_for('dashboard.welcome'))
+    #r = Recipe.query.all()
 
-    r = Recipe.query.filter(
-        or_(
-            Recipe.visibility == "public",
-            (Recipe.visibility == "private") & (Recipe.user_id == current_user.id)
-        )
-    ).all()
-    return render_template("dashboard.html", rezepte=r)
-
-@dashboard_bp.route('/welcome')
-def welcome():
     if current_user.is_authenticated:
-        return redirect(url_for("dashboard.rezepte"))
-    rezepte = Recipe.query.filter_by(visibility="public") \
-                          .order_by(db.func.random()) \
-                          .limit(6).all()
-    return render_template("dashboard.html", rezepte=rezepte)
+        r = Recipe.query.filter(
+            or_(
+                Recipe.visibility == "public",
+                (Recipe.visibility == "private") & (Recipe.user_id == current_user.id)
+            )
+        ).all()
+    else:
+        r = Recipe.query.filter(Recipe.visibility == "public").all()
+
+    return render_template("dashboard.html", rezepte=r)
 
 
 @dashboard_bp.route('/profile')
@@ -120,18 +116,30 @@ def profil_loeschen():
 @login_required
 def profil_bearbeiten():
     if request.method == 'POST':
-        neuer_name = request.form.get('username')
-        neue_email = request.form.get('email')
+        print(">>> Steckbrief angekommen:", request.form.get("steckbrief"))
 
-        current_user.username = neuer_name
-        current_user.email = neue_email
+        current_user.username = request.form.get("username", "").strip()
+        current_user.email = request.form.get("email", "").strip()
+        current_user.steckbrief = request.form.get("steckbrief", "").strip()
+
+        file = request.files.get("profilbild")
+        if file and file.filename:
+            try:
+                rel_path = save_image(
+                    file,
+                    subfolder="uploads",  # Profilbilder‑Ordner
+                    old_filename=current_user.profilbild
+                )
+                current_user.profilbild = rel_path
+            except ValueError as err:
+                flash(str(err), "error")
+                return redirect(request.url)
 
         db.session.commit()
-        flash('Profil aktualisiert.', 'success')
-        return redirect(url_for('dashboard.profile'))
+        flash("Profil aktualisiert.", "success")
+        return redirect(url_for("dashboard.profile"))
 
-    return render_template('profil_bearbeiten.html', user=current_user)
-
+    return render_template("profil_bearbeiten.html", user=current_user)
 
 @dashboard_bp.route('/dashboard/search', methods=['GET'])
 def search():
@@ -146,43 +154,34 @@ def search():
 
     return render_template('dashboard.html', rezepte=rezepte, query=query)
 
-
-@dashboard_bp.route('/recipe/<int:id>')
+@dashboard_bp.route('/recipe/<int:id>', methods=['GET', 'POST'])
+@login_required       # falls Detail-Seite sowieso Login braucht; sonst nur für POST prüfen
 def recipe_details(id):
-    rezepte = Recipe.query.all()
-    rezept = next((r for r in rezepte if r.id == id), None)
+    rezept = Recipe.query.get_or_404(id)
+
+    # ---------- POST: Sichtbarkeit umschalten ----------
+    if request.method == 'POST' and request.form.get('toggle_visibility'):
+        if rezept.user_id != current_user.id:
+            abort(403)
+
+        rezept.visibility = 'private' if rezept.visibility == 'public' else 'public'
+        db.session.commit()
+        flash(f"Rezept ist jetzt {'privat' if rezept.visibility == 'private' else 'öffentlich'}.", "success")
+        return redirect(url_for('dashboard.recipe_details', id=id))
+
+    # ---------- GET: Seite anzeigen ----------
+    # Zugriffsschutz bei privaten Rezepten
+    if rezept.visibility == 'private' and rezept.user_id != current_user.id:
+        abort(403)
+
     user = User.query.get(rezept.user_id)
     raw_zutaten = RawIngredient.query.filter_by(recipe_id=id).all()
     verified_zutaten = [ri.ingredient for ri in rezept.recipe_ingredients]
-    # Case-insensitive deduplication
     zutaten = list({z.name.lower(): z for z in raw_zutaten + verified_zutaten}.values())
-    print(zutaten)
 
-    # Kommentare mit User laden
-    comments = Comment.query.options(joinedload(Comment.user)) \
-        .filter_by(recipe_id=id) \
-        .order_by(Comment.timestamp.desc()) \
-        .all()
-    return render_template('recipe_details.html', rezept=rezept, creator=user, zutaten=zutaten, comments=comments)
-
-@dashboard_bp.route('/recipe/<int:recipe_id>/comment', methods=['POST'])
-@login_required
-def add_comment(recipe_id):
-    rezept = Recipe.query.get_or_404(recipe_id)
-
-    if rezept.visibility.lower() != 'public':
-        flash("Dieses Rezept ist privat.", "info")
-        return redirect(url_for('dashboard.recipe_details', id=recipe_id))
-
-    content = request.form['content'].strip()
-    if not content:
-        flash("Kommentar darf nicht leer sein!", "error")
-        return redirect(url_for('dashboard.recipe_details', id=recipe_id))
-
-    comment = Comment(content=content, user_id=current_user.id, recipe_id=recipe_id)
-    db.session.add(comment)
-    db.session.commit()
-    flash("Kommentar hinzugefügt.", "success")
-    return redirect(url_for('dashboard.recipe_details', id=recipe_id))
-
-
+    return render_template(
+        'recipe_details.html',
+        rezept=rezept,
+        creator=user,
+        zutaten=zutaten
+    )

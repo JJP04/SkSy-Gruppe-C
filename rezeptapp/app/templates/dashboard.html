@@ -40,7 +40,7 @@
 
         <!-- Display if no search -->
         {% else %}
-        {% for rezept in rezepte %}
+{% for rezept in rezepte if rezept.visibility == 'public' %}
         <a class="recipe-details" href="{{ url_for('dashboard.recipe_details', id=rezept.id) }}">
             <div class="card-rezept">
                 <img class="card-image" src="{{ url_for('static', filename=rezept.image_path) }}"
