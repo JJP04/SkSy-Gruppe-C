@@ -440,35 +440,28 @@ hr {
     border-color: #b3d8f0;
 }
 
-
-/*--------------------------------WILLKOMMENSSEITE--------------------------------*/
-.welcome-section {
-    text-align: center;
-    padding: 2rem 1rem;
-    background-color: #f4f4f4;
-    border-radius: 8px;
-    margin-bottom: 2rem;
-}
-
 .welcome-headline {
-    font-size: clamp(1.5rem, 3vw, 2.5rem);
-    color: #00008B;
-    margin-bottom: 0.5rem;
+   font-size: clamp(1.5rem, 3vw, 2.5rem);
+   color: #00008B;
+   margin-bottom: 0.5rem;
+   text-align: center;       /* <-- hier hinzufügen */
 }
 
 .welcome-slogan {
-    font-size: 1.2rem;
-    color: #333;
-    margin-bottom: 1.5rem;
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
-    line-height: 1.6;
+   font-size: 1.2rem;
+   color: #333;
+   margin-bottom: 1.5rem;
+   max-width: 700px;
+   margin-left: auto;
+   margin-right: auto;
+   line-height: 1.6;
+   text-align: center;       /* Falls du willst, kannst du das auch hier ergänzen */
 }
 
 .public-recipes h3 {
-    text-align: center;
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    color: #00008B;
+   text-align: center;
+   font-size: 1.2rem;
+   margin-bottom: 1rem;
+   color: #00008B;
 }
+
