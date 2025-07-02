@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user, logout_user
 from sqlalchemy import or_
-
-from .models import User, Recipe, Ingredient, RecipeIngredient, RawIngredient
+from sqlalchemy.orm import joinedload
+from .models import User, Recipe, Ingredient, RecipeIngredient, RawIngredient, Comment
 from .extensions import db
 
 # für die profilansicht
@@ -152,4 +152,30 @@ def recipe_details(id):
     # Case-insensitive deduplication
     zutaten = list({z.name.lower(): z for z in raw_zutaten + verified_zutaten}.values())
     print(zutaten)
-    return render_template('recipe_details.html', rezept=rezept, creator=user, zutaten=zutaten)
+
+    # Kommentare mit User laden
+    comments = Comment.query.options(joinedload(Comment.user)) \
+        .filter_by(recipe_id=id) \
+        .order_by(Comment.timestamp.desc()) \
+        .all()
+    return render_template('recipe_details.html', rezept=rezept, creator=user, zutaten=zutaten, comments=comments)
+
+@dashboard_bp.route('/recipe/<int:recipe_id>/comment', methods=['POST'])
+@login_required
+def add_comment(recipe_id):
+    rezept = Recipe.query.get_or_404(recipe_id)
+
+    if rezept.visibility.lower() != 'public':
+        flash("Dieses Rezept ist privat.", "info")
+        return redirect(url_for('dashboard.recipe_details', id=recipe_id))
+
+    content = request.form['content'].strip()
+    if not content:
+        flash("Kommentar darf nicht leer sein!", "error")
+        return redirect(url_for('dashboard.recipe_details', id=recipe_id))
+
+    comment = Comment(content=content, user_id=current_user.id, recipe_id=recipe_id)
+    db.session.add(comment)
+    db.session.commit()
+    flash("Kommentar hinzugefügt.", "success")
+    return redirect(url_for('dashboard.recipe_details', id=recipe_id))

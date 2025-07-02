@@ -4,7 +4,8 @@ from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 import os
 
-from .models import User, Recipe, Ingredient, RecipeIngredient, RawIngredient
+
+from .models import User, Recipe, Ingredient, RecipeIngredient, RawIngredient, Comment
 from .extensions import db
 from difflib import get_close_matches
 
@@ -95,7 +96,7 @@ def save():
         title=title,
         description=description,
         visibility=visibility,
-        user_id=author.id,  # wichtig: das User-FK-Feld
+        user_id=author.id,
         image_path=image_path
     )
     db.session.add(neues_rezept)
@@ -144,3 +145,5 @@ def delete_recipe(recipe_id):
     db.session.commit()
     flash('Rezept gelöscht.', 'success')
     return redirect(url_for('dashboard.profile'))  # oder dein Dashboard
+
+

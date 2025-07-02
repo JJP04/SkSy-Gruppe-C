@@ -7,6 +7,17 @@
 <body>
 
 <div class="container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
     <header class="header dashboard">
         <h1>Rezeptwelt.de</h1>
         <a href="/" class="linkbutton dashboard">Zurück</a>
@@ -29,7 +40,6 @@
         </li>
     {% endfor %}
 </ul>
-
         </div>
 
         <div class="recipe-footer">
@@ -48,6 +58,36 @@
         </button>
     </form>
 {% endif %}
+
+
+<div class="comments-section" style="margin-top: 2rem;">
+
+    <h3>Kommentare ({{ comments|length }})</h3>
+
+    {% for comment in comments %}
+        <div class="comment">
+            <strong>
+                {% if comment.user %}
+                    {{ comment.user.username }}
+                {% else %}
+                    (Unbekannter Benutzer)
+                {% endif %}
+            </strong>: {{ comment.content }}
+            <br><small>User-ID: {{ comment.user_id }}</small>
+        </div>
+    {% else %}
+        <p>Keine Kommentare vorhanden.</p>
+    {% endfor %}
+
+    {% if current_user.is_authenticated %}
+        <form action="{{ url_for('dashboard.add_comment', recipe_id=rezept.id) }}" method="POST" style="margin-top:1rem;">
+            <textarea name="content" rows="3" cols="50" placeholder="Kommentar schreiben..." required></textarea>
+            <button type="submit">Kommentar absenden</button>
+        </form>
+    {% else %}
+        <p><em>Du musst eingeloggt sein, um zu kommentieren.</em></p>
+    {% endif %}
+</div>
     </div>
 </div>
 <script>
@@ -58,3 +98,4 @@
   }
 </script>
 </body>
+

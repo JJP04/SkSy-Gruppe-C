@@ -7,6 +7,7 @@ from transformers import pipeline
 from .models import User, Recipe
 
 
+
 def create_app():
     # Absoluter Pfad zum aktuellen Verzeichnis (app/)
     base_dir = os.path.abspath(os.path.dirname(__file__))
