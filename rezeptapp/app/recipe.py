@@ -75,6 +75,7 @@ def finde_aehnliche_zutat(name, bekannte_zutaten, schwelle=0.8):
 @recipe_bp.route('/recipe/save', methods=['GET', 'POST'])
 def save():
     title = request.form.get('title', '').strip()
+    kitchen = request.form.get('kitchen', '').strip()
     description = request.form.get('description', '').strip()
     visibility = request.form.get('visibility', 'private')
     author = current_user
@@ -94,10 +95,14 @@ def save():
     neues_rezept = Recipe(
         title=title,
         description=description,
+        kitchen = kitchen,
         visibility=visibility,
         user_id=author.id,  # wichtig: das User-FK-Feld
         image_path=image_path
     )
+
+    print("Küche:", neues_rezept.kitchen)
+
     db.session.add(neues_rezept)
 
     db.session.flush()

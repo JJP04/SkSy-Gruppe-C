@@ -66,6 +66,7 @@ class RecipeIngredient(db.Model):
 class Recipe(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
+    kitchen = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
     visibility = db.Column(db.String(10), nullable=False)
     image_path = db.Column(db.String(500), nullable=False)
@@ -75,4 +76,3 @@ class Recipe(db.Model):
 
     user = db.relationship('User', backref='recipes')
     recipe_ingredients = db.relationship("RecipeIngredient", back_populates="recipe", cascade="all, delete-orphan")
-

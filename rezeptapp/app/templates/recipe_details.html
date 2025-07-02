@@ -14,21 +14,23 @@
 
     <div class="recipe-details2">
         <div class="recipe-header">
-            <img class="recipe-image" src="{{ url_for('static', filename=rezept.image_path) }}" alt="{{ rezept.title }}">
+            <img class="recipe-image" src="{{ url_for('static', filename=rezept.image_path) }}"
+                 alt="{{ rezept.title }}">
             <h2 class="recipe-title">{{ rezept.title }}</h2>
+            <h2 class="recipe-title">{{ rezept.kitchen }}</h2>
             <p class="recipe-description">{{ rezept.description }}</p>
         </div>
 
         <div class="recipe-section">
             <h3>Zutaten:</h3>
-<ul class="recipe-ingredients checklist">
-    {% for zutat in zutaten %}
-        <li onclick="toggleCheck(this)">
-            <span class="check-icon">☐</span>
-            <span class="ingredient-text">{{ zutat.name }}</span>
-        </li>
-    {% endfor %}
-</ul>
+            <ul class="recipe-ingredients checklist">
+                {% for zutat in zutaten %}
+                <li onclick="toggleCheck(this)">
+                    <span class="check-icon">☐</span>
+                    <span class="ingredient-text">{{ zutat.name }}</span>
+                </li>
+                {% endfor %}
+            </ul>
 
         </div>
 
@@ -37,24 +39,24 @@
         </div>
 
         {% if current_user.is_authenticated and rezept.user_id == current_user.id %}
-    <form action="{{ url_for('recipe.delete_recipe', recipe_id=rezept.id) }}"
-          method="POST"
-          style="margin-top:1rem;">
+        <form action="{{ url_for('recipe.delete_recipe', recipe_id=rezept.id) }}"
+              method="POST"
+              style="margin-top:1rem;">
 
-        <button type="submit"
-                class="btn btn-danger"
-                onclick="return confirm('Möchtest du dieses Rezept wirklich löschen?');">
-            Rezept löschen
-        </button>
-    </form>
-{% endif %}
+            <button type="submit"
+                    class="btn btn-danger"
+                    onclick="return confirm('Möchtest du dieses Rezept wirklich löschen?');">
+                Rezept löschen
+            </button>
+        </form>
+        {% endif %}
     </div>
 </div>
 <script>
-  function toggleCheck(item) {
-    item.classList.toggle('checked');
-    const icon = item.querySelector('.check-icon');
-    icon.textContent = item.classList.contains('checked') ? "☑" : "☐";
-  }
+    function toggleCheck(item) {
+      item.classList.toggle('checked');
+      const icon = item.querySelector('.check-icon');
+      icon.textContent = item.classList.contains('checked') ? "☑" : "☐";
+    }
 </script>
 </body>
