@@ -148,4 +148,77 @@ def delete_recipe(recipe_id):
     flash('Rezept gelöscht.', 'success')
     return redirect(url_for('dashboard.profile'))  # oder dein Dashboard
 
+#rezept bearbeiten
+@recipe_bp.route('/recipe/<int:recipe_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_recipe(recipe_id):
+    recipe = Recipe.query.get_or_404(recipe_id)
 
+    # Nur Besitzer darf bearbeiten
+    if recipe.user_id != current_user.id:
+        abort(403)
+
+    if request.method == 'POST':
+        title       = request.form['title'].strip()
+        description = request.form['description'].strip()
+        visibility  = request.form.get('visibility', 'private')
+        image_path  = recipe.image_path  # Behalte existierendes Bild bei
+
+        # ========== Schritt 2: Zutaten wurden bestätigt ==========
+        if 'final' in request.form:
+            # Alte Zutaten-Zuordnungen entfernen
+            RecipeIngredient.query.filter_by(recipe_id=recipe.id).delete()
+
+            # Neue Zutaten aus Formular übernehmen
+            names = [n.strip().lower() for n in request.form.getlist('ingredients[]') if n.strip()]
+            for name in names:
+                ingr = Ingredient.query.filter_by(name=name).first()
+                if not ingr:
+                    ingr = Ingredient(name=name)
+                    db.session.add(ingr)
+                db.session.add(RecipeIngredient(recipe=recipe, ingredient=ingr))
+
+            # Rezeptdaten aktualisieren
+            recipe.title = title
+            recipe.description = description
+            recipe.visibility = visibility
+
+            db.session.commit()
+            flash('Rezept erfolgreich aktualisiert!', 'success')
+            return redirect(url_for('dashboard.recipe_details', id=recipe.id))
+
+        # ========== Schritt 1: Beschreibung analysieren ==========
+        else:
+            ner = current_app.ner_pipeline
+            ner_results = ner(description)
+
+            ingredients = []
+            for entity in ner_results:
+                if entity.get('entity_group') == 'NAME':
+                    ingredients.append(entity.get('word'))
+
+            cleaned_ingredients = list(set([word.lower() for word in ingredients if len(word) > 2]))
+
+            return render_template(
+                'recipe.html',
+                active_tab='ingredients',
+                edit=True,
+                rezept=recipe,
+                title=title,
+                description=description,
+                visibility=visibility,
+                image_path=image_path,
+                ingredients=cleaned_ingredients
+            )
+
+    # ========== GET: Bearbeiten-Form anzeigen ==========
+    return render_template(
+        'recipe.html',
+        active_tab='create',
+        edit=True,
+        rezept=recipe,
+        title=recipe.title,
+        description=recipe.description,
+        visibility=recipe.visibility,
+        image_path=recipe.image_path
+    )

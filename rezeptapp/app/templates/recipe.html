@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>Rezept erstellen</title>
+    <title>{{ "Rezept bearbeiten" if edit else "Rezept erstellen" }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
         /* Add styles for ingredient input + delete button */
@@ -118,6 +118,8 @@
 </head>
 <body>
 
+{% set edit = edit|default(False) %}   {# <-- NEU #}
+
 <div class="container">
 
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -133,16 +135,15 @@
     {% endwith %}
 
     {% if active_tab == 'create' %}
-    <form method="post" action="{{ url_for('recipe.analyze') }}" enctype="multipart/form-data">
+    <form method="post" action="{{ url_for('recipe.edit_recipe', recipe_id=rezept.id) if edit else url_for('recipe.analyze') }}" enctype="multipart/form-data">
 
         <div class="header">
-            <h1>Rezept erstellen</h1>
+            <h1>{{ "Rezept bearbeiten" if edit else "Rezept erstellen" }}</h1>
         </div>
 
-        <input type="text" id="title" name="title" placeholder="Rezept-Titel" required>
+        <input type="text" id="title" name="title" required value="{{ title if edit else '' }}" placeholder="Rezept-Titel">
 
-        <textarea id="description" name="description" rows="16" placeholder="Beschreibung" required
-                  style="width: 100%; margin-top: 15px; margin-bottom: 15px; resize: vertical;"></textarea>
+        <textarea id="description" name="description" rows="16" required style="width:100%; margin:15px 0; resize:vertical;">{{ description if edit else '' }}</textarea>
 
         <select id="visibility" name="visibility" required
                 style="width: 100%; font-size: 16px; padding: 12px; margin-bottom: 15px; border-radius: 6px; border: 1.5px solid #9DC183;">
@@ -153,7 +154,8 @@
 
         <input type="file" id="imageUpload" name="imageUpload" accept="image/*">
 
-        <button type="submit">Weiter</button>
+        <button type="submit" name="preview">Weiter</button>
+
     </form>
 
     {% elif active_tab == 'ingredients' %}
@@ -161,7 +163,7 @@
         <h1>Zutaten-Vorschau</h1>
     </div>
     {% if ingredients %}
-    <form method="POST" action="{{ url_for('recipe.save') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ url_for('recipe.edit_recipe', recipe_id=rezept.id) if edit else url_for('recipe.save') }}" enctype="multipart/form-data">
         <input type="hidden" name="title" value="{{ title }}">
         <input type="hidden" name="description" value="{{ description }}">
         <input type="hidden" name="visibility" value="{{ visibility }}">
@@ -181,7 +183,7 @@
         </div>
 
         <button type="button" onclick="addIngredient()">+ Neue Zutat</button>
-        <button type="submit">Rezept speichern</button>
+        <button type="submit" name="final">Rezept speichern</button>
     </form>
     {% else %}
     <p class="no-ingredients">Keine Zutaten erkannt.</p>
