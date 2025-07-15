@@ -7,7 +7,6 @@ from transformers import pipeline
 from .models import User, Recipe
 
 
-
 def create_app():
     # Absoluter Pfad zum aktuellen Verzeichnis (app/)
     base_dir = os.path.abspath(os.path.dirname(__file__))
@@ -51,4 +50,16 @@ def create_app():
     with app.app_context():
         #Recipe.__table__.drop(db.engine, checkfirst=True)  #Tabelle löschen
         db.create_all()
+
+        dummy = User.query.get(9999)
+        if not dummy:
+            dummy = User(
+                id=9999,
+                username="[gelöschter Nutzer]",
+                email="deleted@example.com"
+            )
+            dummy.set_password("deleted")
+            db.session.add(dummy)
+            db.session.commit()
+
     return app

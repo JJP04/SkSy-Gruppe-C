@@ -74,10 +74,6 @@ def profil_loeschen():
             # Rezepte vorhanden → Bestätigung anzeigen
 
 
-
-
-
-
             return render_template(
                 'profil_loeschen_bestaetigung.html',
                 rezeptanzahl=rezeptanzahl  # Wichtig: Anzahl übergeben!
