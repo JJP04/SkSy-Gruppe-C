@@ -4,7 +4,7 @@ from .extensions import db
 from .models import User
 from flask_login import LoginManager
 from transformers import pipeline
-from .models import User, Recipe
+from .models import User, Recipe, AdminUser
 
 
 def create_app():
@@ -26,6 +26,8 @@ def create_app():
 
     @login_manager.user_loader
     def load_user(user_id):
+        if user_id == "admin":
+            return AdminUser()
         return User.query.get(int(user_id))
 
     # erstes Mal starten dauert, da Model lokal heruntergeladen wird (Achtung, ~ 1 GB)

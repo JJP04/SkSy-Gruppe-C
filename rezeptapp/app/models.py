@@ -3,6 +3,15 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from datetime import datetime
 
+class AdminUser(UserMixin):
+    def __init__(self):
+        self.id = "admin"
+        self.email = "admin@mail.de"
+    def is_admin(self):
+        return True
+
+
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(16), unique=True, nullable=False)

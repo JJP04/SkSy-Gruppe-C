@@ -2,13 +2,15 @@ from flask import Blueprint, render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user, logout_user
 from sqlalchemy import or_
 
-from .models import User, Recipe, Ingredient, RecipeIngredient, RawIngredient
+from .models import User, Recipe, Ingredient, RecipeIngredient, RawIngredient, AdminUser
 from .extensions import db
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 @admin_bp.route('/')
 def admin_dashboard():
+    if not isinstance(current_user, AdminUser):
+        return redirect(url_for('auth.login', tab='login'))
     users = User.query.all()
     return render_template('admin.html', users=users)
 

@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session
 from sqlalchemy import func
 from flask_login import login_user, logout_user, login_required
-from .models import User
+from .models import User, AdminUser
 from .extensions import db
 import random
 
@@ -39,6 +39,8 @@ def login():
             password = request.form.get('password')
 
             if email == "admin@mail.de" and password == "admin":
+                admin = AdminUser()
+                login_user(admin)
                 return redirect(url_for('admin.admin_dashboard'))
 
             # Check ob User existiert
